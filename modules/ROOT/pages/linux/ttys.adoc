@@ -1,5 +1,4 @@
 = Терминальные устройства
-:page-pagination:
 :page-authors: Иван Калинин
 :description: Терминалы. PTS и TTY устройства.
 

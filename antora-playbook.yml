@@ -1,6 +1,7 @@
 site:
   title: ProgTech Book
   start_page: ptbook::index.adoc
+
 content:
   sources:
     - url: https://github.com/progtech-course/book
@@ -10,6 +11,15 @@ ui:
     url: https://github.com/progtech-course/antora-ui/releases/download/latest/ui-bundle.zip
     snapshot: true
   supplemental_files: ./supplemental-ui
+
+asciidoc:
+  attributes:
+    experimental: ''
+    page-pagination: ''
+    allow-uri-read: ''
+  extensions:
+    - ./lib/remote-include-processor.js
+
 antora:
   extensions:
     - require: '@antora/lunr-extension'

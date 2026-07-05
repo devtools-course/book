@@ -1,5 +1,4 @@
 = Filesystem Hierarchy Standard
-:page-pagination:
 :page-authors: Иван Калинин
 :description: Filesystem Hierarchy Standard (Linux)
 

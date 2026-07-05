@@ -1,5 +1,4 @@
 = Типы файлов
-:page-pagination:
 :page-authors: Иван Калинин
 :description: Типы файлов в Linux
 

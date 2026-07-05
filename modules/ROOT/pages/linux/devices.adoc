@@ -1,5 +1,4 @@
 = Папка dev
-:page-pagination:
 :page-authors: Иван Калинин
 :description: Устройство папки /dev
 
