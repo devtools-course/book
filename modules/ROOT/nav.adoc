@@ -8,3 +8,6 @@
 * xref:linux/fhs.adoc[FHS]
 * xref:linux/devices.adoc[]
 * xref:linux/ttys.adoc[]
+
+.Packages & Archives
+* xref:utils/rpm.adoc[]

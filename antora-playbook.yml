@@ -1,14 +1,15 @@
 site:
-  title: ProgTech Book
-  start_page: ptbook::index.adoc
+  title: DevTools Book
+  start_page: book::index.adoc
 
 content:
   sources:
-    - url: https://github.com/progtech-course/book
+    - url: .
       branches: [ '*' ]
 ui:
   bundle:
-    url: https://github.com/progtech-course/antora-ui/releases/download/latest/ui-bundle.zip
+    url: https://github.com/devtools-course/antora-ui/releases/download/latest/ui-bundle.zip
+#    url: /home/nbah/antora-ui-default/build/ui-bundle.zip
     snapshot: true
   supplemental_files: ./supplemental-ui
 
