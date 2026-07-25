@@ -5,5 +5,5 @@ build/
 node_modules/
 
 **/*.iml
-
+bundle/ui-bundle.zip
 

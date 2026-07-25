@@ -1,0 +1,90 @@
+= Как разрабатывать сайт
+:page-authors: Иван Калинин
+
+== Инструменты
+
+Для разработки вам потребуется:
+
+* `npm` -- можно установить через пакетный менеджер, например `apt install node` (обычно поставляется в пакете `node`)
+* IDE с плагином для asciidoctor
+** Для JetBrains IDE советую установить плагин https://plugins.jetbrains.com/plugin/7391-asciidoc
+
+Склонируйте проект и из его корня исполните:
+[,shell]
+----
+npm install
+----
+
+== Просмотр сайта
+
+Чтобы запустить сборку сайта исполните:
+[,shell]
+----
+npx antora --stacktrace antora-playbook.yml
+----
+Полученный сайт будет лежать в папке `build`. Однако, у него могут не отображаться иконки на блоках и на каждое изменение необходимо вручную пересобирать.
+
+
+Для динамического превью нужно использовать докер:
+[.wrap,shell]
+----
+docker run --rm -p 35729:35729 -p 2020:2020 -v "${PWD}":/preview/antora -v "${PWD}/bundle:/preview/bundles" ghcr.io/vshn/antora-preview --antora='.' --style=ui-bundle
+----
+
+NOTE: Для подгрузки стилей скачайте `ui-bundle.zip` из https://github.com/progtech-course/antora-ui/releases/tag/latest[проекта] и поместите в папку `bundle` в корне проекта.
+
+Сайт будет доступен на http://localhost:2020. Однако, уже тут не будет работать фавиконка и настройки UI.
+
+Подробнее об образе можно прочитать в https://github.com/vshn/antora-preview[репозитории проекта].
+
+== Настройка плейбука
+
+При локальной разработке советую использовать следующую модификацию `antora-playbook.yml`:
+[.wrap,yaml]
+----
+site:
+  title: ProgTech Book
+  start_page: ptbook::index.adoc
+content:
+  sources:
+    - url: .
+      branches: [ '*' ]
+ui:
+  bundle:
+    url: https://github.com/progtech-course/antora-ui/releases/download/latest/ui-bundle.zip
+    snapshot: true
+  supplemental_files: ./supplemental-ui
+antora:
+  extensions:
+    - require: '@antora/lunr-extension'
+      languages: [en, ru]
+
+# runtime:
+#   fetch: true
+----
+
+Изменения:
+
+. `url: .` -- используется локальный репо, а не исходники в гитхабе
+. `runtime: fetch: true` -- если обновился исходник с UI, то эта настройка перескачает его, иначе будет использоваться закэшированный
+
+WARNING: Не нужно это коммитить в репозиторий!
+
+== Возможности asciidoctor
+
+Посмотреть, как можно оформить материалы, можно на https://progtech-course.github.io/antora-ui[превью UI]. Исходники аскидоктора лежат https://github.com/progtech-course/antora-ui/blob/main/preview-src/index.adoc[здесь].
+
+Также поддерживается кастомная стилизация TODO:
+
+[.wrap,asciidoc]
+----
+// TODO
+[TIP.todo]
+====
+Нужна ссыль на mounting process
+====
+----
+
+CAUTION: При ее использовании просьба оставлять выше комментарий `// TODO` -- так IDE сможет трекать тудушки в проекте.
+
+При написании страницы добавляйте параметр `:description:` с кратким описанием, о чем написано на странице, а также указывайте себя в `:page-authors:`. При указании авторства пишите так же, как в заголовке xref:authors.adoc[authors.adoc] -- иначе не сработают автоматические ссылки.

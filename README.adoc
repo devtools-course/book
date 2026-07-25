@@ -1,11 +1,11 @@
-= ProgTech Book
-:url-project: https://github.com/progtech-course/book/actions/workflows
+= DevTools Book
+:url-project: https://github.com/devtools-course/book/actions/workflows
 :workflow: site.yml
 :img-ci-status: {url-project}/{workflow}/badge.svg
 
 image:{img-ci-status}[CI Status]
 
-Материалы курса "Технологии Программирования".
+Материалы курса "Инструменты разработчика".
 
 Проект распространяется под лицензией link:LICENSE[MPL-2.0].
 

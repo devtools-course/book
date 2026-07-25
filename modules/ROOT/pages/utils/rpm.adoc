@@ -1,0 +1,67 @@
+= RPM пакеты
+
+Дистрибутивы Red Hat семейства используют пакетный менеджер `rpm`. На базе него есть пакетные менеджеры `yum` и `dnf`.
+
+== Rpmbuild
+
+Для разработки `rpm` пакетов используется директория `~/rpmbuild`. Ее можно автоматически настроить с помощью команды `rpmdev-setuptree` из `rpmdevtools` или вручную:
+
+[,text]
+----
+🖿 /home/USER/rpmbuild
+├─ 🖿 BUILD
+├─ 🖿 RPMS
+├─ 🖿 SOURCES
+├─ 🖿 SPECS
+└─ 🖿 SPRMS
+----
+
+* `BUILD` -- директория в которой происходит сборка пакетов
+* `RPMS` -- директория для хранения `rpm`-пакетов
+* `SOURCES` -- директория для хранения архивов с исходниками для использования при сборке пакетов
+* `SPECS` -- директория для хранения `spec`-файлов
+* `SRPMS` -- директория для хранения `srpm`-пакетов
+
+== Spec файлы
+
+Для создания своего `rpm`-пакета необходимо создать архив с исходниками и файл описания сборки пакета. Последний должен иметь имя `<PACKAGE NAME>.spec`. Его можно создать как вручную в папке `SPECS`, так и выполнив команду `rpmdev-newspec <PACKAGE NAME>`. Рассмотрим основные компоненты спецификации:
+
+Преамбула::
+[%autowidth]
+|===
+| `Name` | Название пакета
+| `Version` | Версия исходного кода
+| `Release` | Номер релиза, newspec по дефолту выставит `1%{?dist}`
+| `Summary` | Краткое описание проекта
+| `License` | Лицензия под которой распространяется проект
+| `URL` | URL сайта проекта
+| `Source` | URL исходного кода
+| `BuildRequires` | Зависимости, необходимые для сборки пакета
+| `Requires` | Рантайм зависимости
+| `BuildArch` | Под какую архитектуру собран проект
+|===
+
+Тело::
+[%autowidth]
+|===
+| `%description` | Подробное описание проекта
+| `%prep` | Скрипт подготовки исходников к сборке
+| `%build` | Скрипт сборки проекта
+| `%install` | Скрипт установки проекта в `%{buildroot}`
+| `%files` | Индекс файлов, которые будут установлены
+| `%changelog` | Описания изменений проекта
+|===
+
+// TODO
+[TIP.todo]
+====
+Дописать
+====
+
+
+
+== Read more
+
+* https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/packaging_and_distributing_software/packaging-software_packaging-and-distributing-software[RPM documentation (C) Red Hat]
+* https://docs.fedoraproject.org/en-US/packaging-guidelines/RPMMacros/[Predefined macros (C) Fedora docs]
+* http://ftp.rpm.org/max-rpm/[Maximum RPM (C) Edward C. Bailey]

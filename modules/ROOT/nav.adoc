@@ -1,4 +1,13 @@
-.Intro
+.О проекте
 * xref:authors.adoc[Авторы]
 * xref:code-of-conduct.adoc[Code of conduct]
+* xref:dev-guides.adoc[Гайды по разработке]
 
+.Linux FS
+* xref:linux/file-types.adoc[Типы файлов]
+* xref:linux/fhs.adoc[FHS]
+* xref:linux/devices.adoc[]
+* xref:linux/ttys.adoc[]
+
+.Packages & Archives
+* xref:utils/rpm.adoc[]
