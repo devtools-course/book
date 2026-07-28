@@ -5,7 +5,7 @@ site:
 content:
   sources:
     - url: .
-      branches: [ 'dev' ]
+      branches: [ '*' ]
 ui:
   bundle:
     url: https://github.com/devtools-course/antora-ui/releases/download/latest/ui-bundle.zip
