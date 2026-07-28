@@ -1,0 +1,3 @@
+#! /usr/bin/env bash
+
+cp shiki-highlight-theme/taekwandodo-light.json node_modules/shiki/themes

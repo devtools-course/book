@@ -5,7 +5,7 @@ site:
 content:
   sources:
     - url: .
-      branches: [ '*' ]
+      branches: [ 'dev' ]
 ui:
   bundle:
     url: https://github.com/devtools-course/antora-ui/releases/download/latest/ui-bundle.zip
@@ -18,11 +18,25 @@ asciidoc:
     experimental: ''
     page-pagination: ''
     allow-uri-read: ''
+    source-highlighter: shiki
   extensions:
     - ./lib/remote-include-processor.js
 
 antora:
   extensions:
+    - require: 'antora-shiki-extension'
+      use_line_numbers: true
+      theme: taekwandodo-light
+      languages:
+        - asciidoc
+        - java
+        - cpp
+        - c
+        - bash
+        - console
+        - json
+        - xml
+        - yaml
     - require: '@antora/lunr-extension'
       languages: [en, ru]
 
