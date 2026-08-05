@@ -11,3 +11,4 @@
 
 .Packages & Archives
 * xref:utils/rpm.adoc[]
+* xref:utils/yum-repo.adoc[]

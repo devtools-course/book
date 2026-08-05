@@ -37,6 +37,15 @@ antora:
         - json
         - xml
         - yaml
+        - toml
+        - ini
+        - cmake
+        - make
+      register_languages:
+        - id: 'rpmspec'
+          scope_name: 'source.spec'
+          grammar_path: ./langs/rpmspec.tmLanguage.json
+          alias: ['rpmspec']
     - require: '@antora/lunr-extension'
       languages: [en, ru]
 

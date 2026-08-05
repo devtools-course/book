@@ -1,0 +1,228 @@
+= Yum репозиторий
+:page-authors: Иван Калинин
+
+NOTE: Все что описано далее также применимо для `dnf`.
+
+
+== Структура репозитория
+
+В базовом случае все `rpm` пакеты лежат в корне репозитория, а метаинформация о хранилище лежит в папке `repodata`:
+[,text]
+----
+🖿 repo
+├─ 🗃package-1.0.0.rpm
+└─ 🖿 repodata
+   ├─ 🗳 ...-filelists.xml.zst
+   ├─ 🗳 ...-primary.xml.zst
+   ├─ 🗳 ...-other.xml.zst
+   ├─ 🖹 repomd.xml
+   └─ 🔒︎ repomd.xml.asc
+----
+
+В случае же хранения пакетов для разных архитектур имеет смысл разнести их по разным папкам. Каждая папка будет отвечать за свою архитектуру (`x86_64`, `aarch64`, `noarch`, etc.). Строение же каждой подпапки будет повторять устройство из базового случая.
+
+[,text]
+----
+🖿 repo
+├─ 🖿 x86_64
+│  ├─ 🗃package-1.0.0.x86_64.rpm
+│  └─ 🖿 repodata
+│     ├─ 🗳 ...-filelists.xml.zst
+│     ├─ 🗳 ...-primary.xml.zst
+│     ├─ 🗳 ...-other.xml.zst
+│     ├─ 🖹 repomd.xml
+│     └─ 🔒︎ repomd.xml.asc
+├─ 🖿 ...
+└─ 🖿 aarch64
+   ├─ 🗃package-1.0.0.aarch64.rpm
+   └─ 🖿 repodata
+      ├─ 🗳 ...-filelists.xml.zst
+      ├─ 🗳 ...-primary.xml.zst
+      ├─ 🗳 ...-other.xml.zst
+      ├─ 🖹 repomd.xml
+      └─ 🔒︎ repomd.xml.asc
+----
+
+== Метаинформация
+
+NOTE: `.zst` -- это расширение файлов сжатых через `zstd`. Чтобы посмотреть содержимое можно выполнить команду `zstd --stdout -d <FILENAME>`.
+
+* `filelists` -- Перечисляет все хранимые файлы:
+
+[.wrap,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<filelists xmlns="http://linux.duke.edu/metadata/filelists" packages="1">
+    <package pkgid="c910...c" name="fenrir" arch="noarch">
+        <version epoch="0" ver="2026.0+2" rel="1"/>
+        <file type="dir">/etc/fenrir</file>
+        <file>/etc/fenrir/fenrir_home/repo/local/index.hel</file>
+        <file type="dir">/etc/fenrir/fenrir_home/shared</file>
+        <file type="dir">/etc/fenrir/fenrir_home/shared/walk</file>
+        <file>/etc/fenrir/fenrir_home/shared/walk-inspections</file>
+        <!-- ... -->
+    </package>
+</filelists>
+----
+
+* `primary` -- Индекс первичной информации о пакетах:
+
+[.wrap,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://linux.duke.edu/metadata/common" xmlns:rpm="http://linux.duke.edu/metadata/rpm" packages="1">
+<package type="rpm">
+  <name>fenrir</name>
+  <arch>noarch</arch>
+  <version epoch="0" ver="2026.0+2" rel="1"/>
+  <checksum type="sha256" pkgid="YES">c910...c</checksum>
+  <summary>Testing system 'fenrir'</summary>
+  <description>A lightweight general purpose testing tool</description>
+  <packager></packager>
+  <url>https://github.com/1bah/fenrir</url>
+  <time file="1785889558" build="1785889525"/>
+  <size package="41996" installed="155058" archive="162700"/>
+  <location href="fenrir-2026.0+2.noarch.rpm"/>
+  <format>
+    <rpm:license>Apache License 2.0</rpm:license>
+    <rpm:vendor></rpm:vendor>
+    <rpm:group>Unspecified</rpm:group>
+    <rpm:buildhost>taekwandodo</rpm:buildhost>
+    <rpm:sourcerpm>fenrir-2026.0+2-1.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4504" end="14417"/>
+    <rpm:provides>
+      <rpm:entry name="fenrir" flags="EQ" epoch="0" ver="2026.0+2" rel="1"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="bash" flags="GE" epoch="0" ver="5.0.0"/>
+      <rpm:entry name="shadow-utils" pre="1"/>
+    </rpm:requires>
+    <file type="dir">/etc/fenrir</file>
+    <!-- ... -->
+  </format>
+</package>
+</metadata>
+----
+
+* `other` -- Индекс changelog-ов:
+
+[.wrap,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<otherdata xmlns="http://linux.duke.edu/metadata/other" packages="1">
+<package pkgid="c910...c" name="fenrir" arch="noarch">
+  <version epoch="0" ver="2026.0+2" rel="1"/>
+  <changelog author="1bah &lt;koefic.cien@gmail.com&gt;" date="1784808000">-</changelog>
+</package>
+</otherdata>
+----
+
+* `repomd` -- Индекс метаданных репозитория
+
+[.wrap,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<repomd xmlns="http://linux.duke.edu/metadata/repo" xmlns:rpm="http://linux.duke.edu/metadata/rpm">
+  <revision>1785890123</revision>
+  <data type="primary">
+    <checksum type="sha256">...</checksum>
+    <open-checksum type="sha256">...</open-checksum>
+    <location href="repodata/...-primary.xml.zst"/>
+    <timestamp>1785890123</timestamp>
+    <size>1007</size>
+    <open-size>3572</open-size>
+  </data>
+  <data type="filelists">
+    <checksum type="sha256">...</checksum>
+    <open-checksum type="sha256">...</open-checksum>
+    <location href="repodata/...-filelists.xml.zst"/>
+    <timestamp>1785890123</timestamp>
+    <size>610</size>
+    <open-size>2753</open-size>
+  </data>
+  <data type="other">
+    <checksum type="sha256">....</checksum>
+    <open-checksum type="sha256">...</open-checksum>
+    <location href="repodata/...-other.xml.zst"/>
+    <timestamp>1785890123</timestamp>
+    <size>297</size>
+    <open-size>378</open-size>
+  </data>
+</repomd>
+----
+
+* `repomd.xml.asc` -- GPG подпись
+
+[.wrap,text]
+----
+-----BEGIN PGP SIGNATURE-----
+
+iJUEABMJAB0WIQTi4VTqkltukY7WqsRD+K3dMep+mQUCanKF1QAKCRBD+K3dMep+
+mYayAX4k7lnrStJ/sWhPqOs6oQBt+DSNHSNAd/kK/657zd33qGk4nLrE9wGdDU7v
+OJpPCIgBgMRgWZZl+kxdcjhabtMXT9iOQE7DuKpg45Js6TeT3aTFW+LMxc8gCNiT
+YlAGz/Wokg==
+=pXx4
+-----END PGP SIGNATURE-----
+----
+
+== Создание и обновление репозитория
+
+Для создания индексов с метаинформацией существует утилита `createrepo_c`. В качестве единственного аргумента она принимает директорию, в которой лежат `rpm`-пакеты.
+
+[,console]
+----
+$ ls
+repo.rpm
+$ createrepo_c .
+$ tree
+repo-root
+├── repo.rpm
+└── repodata
+    ├── ...-filelists.xml.zst
+    ├── ...-primary.xml.zst
+    ├── ...-other.xml.zst
+    └── repomd.xml
+----
+
+NOTE: Для мульти-архитектурного репозитория нужно будет просто вызвать команду для каждой архитектуры.
+
+
+Если же надо обновить уже существующий репозиторий, то просто обновляются соответствующие `rpm`-файлы и далее запускается `createrepo_c` с флагом `--update`.
+
+== Подпись репозитория
+
+Чтобы создать цифровую подпись, достаточно выполнить команду `gpg -ad --batch --yes <PATH TO repomd.xml>`.
+
+IMPORTANT: Убедитесь, что выбран правильный gpg-ключ.
+
+== Подключение нового репозитория
+
+Чтобы на клиенте начать использовать новый репозиторий, необходимо создать `<REPO>.repo` файл в папке `/etc/yum.repos.d`:
+
+[,ini]
+----
+# File /etc/yum.repos.d/1bah.repo
+[1bah-repo]
+name=1BAH package registry
+baseurl=https://1bah.github.io/rpm
+enabled=1
+gpgcheck=1
+gpgkey=https://1bah.github.io/public.key
+----
+
+* `name` -- Имя репозитория
+* `baseurl` -- URL, по которому доступен корневая папка репозитория
+* `enabled` -- Игнорировать или нет (`0`/`1`)
+* `gpgcheck` -- Верифицировать ли gpg подпись (`0`/`1`)
+* `gpgkey` -- URL, по которому доступен публичный ключ, используемый при подписи репозитория
+
+// TODO
+[TIP.todo]
+====
+Ссылку на страницу про подписи
+====
+
+== Read more
+
+* https://github.com/1BAH/1bah.github.io/tree/main/rpm[Репозиторий для fenrir (C) 1bah]
+* http://createrepo.baseurl.org/[Wiki (C) Createrepo team]
