@@ -1,0 +1,8 @@
+services:
+  host:
+    image: nginx:1.28.0-alpine
+    volumes:
+      - ./build:/opt/data
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+    ports:
+      - "3333:6789"
