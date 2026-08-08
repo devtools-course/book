@@ -7,14 +7,14 @@
 
 Для разработки `rpm` пакетов используется директория `~/rpmbuild`. Ее можно автоматически настроить с помощью команды `rpmdev-setuptree` из `rpmdevtools` или вручную:
 
-[,text]
+[,text,subs="+macros"]
 ----
-🖿 /home/USER/rpmbuild
-├─ 🖿 BUILD
-├─ 🖿 RPMS
-├─ 🖿 SOURCES
-├─ 🖿 SPECS
-└─ 🖿 SPRMS
+icon:folder[] /home/USER/rpmbuild
+├─ icon:folder[] BUILD
+├─ icon:folder[] RPMS
+├─ icon:folder[] SOURCES
+├─ icon:folder[] SPECS
+└─ icon:folder[] SPRMS
 ----
 
 * `BUILD` -- директория в которой происходит сборка пакетов
@@ -66,16 +66,16 @@
 
 Пусть уже есть такая структура `~/rpmbuild`:
 
-[,text]
+[,text,subs="+macros"]
 ----
-🖿 ~/rpmbuild
-├─ 🖿 BUILD
-├─ 🖿 RPMS
-├─ 🖿 SOURCES
-│  └─ 🗃package-src.tar.gz
-├─ 🖿 SPECS
-│  └─ 🖹 package.spec
-└─ 🖿 SPRMS
+icon:folder[] ~/rpmbuild
+├─ icon:folder[] BUILD
+├─ icon:folder[] RPMS
+├─ icon:folder[] SOURCES
+│  └─ icon:file-archive[] package-src.tar.gz
+├─ icon:folder[] SPECS
+│  └─ icon:file-text[] package.spec
+└─ icon:folder[] SPRMS
 ----
 
 Тогда, чтобы собрать пакет, достаточно запустить команду `rpmbuild -ba ~/rpmbuild/SPECS/package.spec`. Флаг `-b` означает, что мы будем собирать пакет, а параметр `a` -- собрать и `rpm`, и `src.rpm`.

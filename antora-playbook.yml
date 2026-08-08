@@ -19,6 +19,7 @@ asciidoc:
     page-pagination: ''
     allow-uri-read: ''
     source-highlighter: shiki
+    icons: font
   extensions:
     - ./lib/remote-include-processor.js
 

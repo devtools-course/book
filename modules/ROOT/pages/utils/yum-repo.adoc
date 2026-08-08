@@ -7,40 +7,40 @@ NOTE: Все что описано далее также применимо дл
 == Структура репозитория
 
 В базовом случае все `rpm` пакеты лежат в корне репозитория, а метаинформация о хранилище лежит в папке `repodata`:
-[,text]
+[,text,subs="+macros"]
 ----
-🖿 repo
-├─ 🗃package-1.0.0.rpm
-└─ 🖿 repodata
-   ├─ 🗳 ...-filelists.xml.zst
-   ├─ 🗳 ...-primary.xml.zst
-   ├─ 🗳 ...-other.xml.zst
-   ├─ 🖹 repomd.xml
-   └─ 🔒︎ repomd.xml.asc
+icon:folder[] repo
+├─ icon:file-archive[] package-1.0.0.rpm
+└─ icon:folder[] repodata
+   ├─ icon:file-code[] ...-filelists.xml.zst
+   ├─ icon:file-code[] ...-primary.xml.zst
+   ├─ icon:file-code[] ...-other.xml.zst
+   ├─ icon:file-text[] repomd.xml
+   └─ icon:lock[] repomd.xml.asc
 ----
 
 В случае же хранения пакетов для разных архитектур имеет смысл разнести их по разным папкам. Каждая папка будет отвечать за свою архитектуру (`x86_64`, `aarch64`, `noarch`, etc.). Строение же каждой подпапки будет повторять устройство из базового случая.
 
-[,text]
+[,text,subs="+macros"]
 ----
-🖿 repo
-├─ 🖿 x86_64
-│  ├─ 🗃package-1.0.0.x86_64.rpm
-│  └─ 🖿 repodata
-│     ├─ 🗳 ...-filelists.xml.zst
-│     ├─ 🗳 ...-primary.xml.zst
-│     ├─ 🗳 ...-other.xml.zst
-│     ├─ 🖹 repomd.xml
-│     └─ 🔒︎ repomd.xml.asc
-├─ 🖿 ...
-└─ 🖿 aarch64
-   ├─ 🗃package-1.0.0.aarch64.rpm
-   └─ 🖿 repodata
-      ├─ 🗳 ...-filelists.xml.zst
-      ├─ 🗳 ...-primary.xml.zst
-      ├─ 🗳 ...-other.xml.zst
-      ├─ 🖹 repomd.xml
-      └─ 🔒︎ repomd.xml.asc
+icon:folder[] repo
+├─ icon:folder[] x86_64
+│  ├─ icon:file-archive[] package-1.0.0.x86_64.rpm
+│  └─ icon:folder[] repodata
+│     ├─ icon:file-code[] ...-filelists.xml.zst
+│     ├─ icon:file-code[] ...-primary.xml.zst
+│     ├─ icon:file-code[] ...-other.xml.zst
+│     ├─ icon:file-text[] repomd.xml
+│     └─ icon:lock[] repomd.xml.asc
+├─ icon:folder[] ...
+└─ icon:folder[] aarch64
+   ├─ icon:file-archive[] package-1.0.0.aarch64.rpm
+   └─ icon:folder[] repodata
+      ├─ icon:file-code[] ...-filelists.xml.zst
+      ├─ icon:file-code[] ...-primary.xml.zst
+      ├─ icon:file-code[] ...-other.xml.zst
+      ├─ icon:file-text[] repomd.xml
+      └─ icon:lock[] repomd.xml.asc
 ----
 
 == Метаинформация
@@ -112,7 +112,7 @@ NOTE: `.zst` -- это расширение файлов сжатых через
 <otherdata xmlns="http://linux.duke.edu/metadata/other" packages="1">
 <package pkgid="c910...c" name="fenrir" arch="noarch">
   <version epoch="0" ver="2026.0+2" rel="1"/>
-  <changelog author="1bah &lt;koefic.cien@gmail.com&gt;" date="1784808000">-</changelog>
+  <changelog author="1bah &lt;koefic.cien@gmail.com&gt;" date="1784808000"> - </changelog>
 </package>
 </otherdata>
 ----
