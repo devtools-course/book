@@ -68,7 +68,7 @@ WARNING: Не нужно это коммитить в репозиторий!
 
 == Возможности asciidoctor
 
-Посмотреть, как можно оформить материалы, можно на https://progtech-course.github.io/antora-ui[превью UI]. Исходники аскидоктора лежат https://github.com/progtech-course/antora-ui/blob/main/preview-src/index.adoc[здесь].
+Посмотреть, как можно оформить материалы, можно на https://devtools-course.github.io/antora-ui[превью UI]. Исходники аскидоктора лежат https://github.com/progtech-course/antora-ui/blob/main/preview-src/index.adoc[здесь].
 
 Также поддерживается кастомная стилизация TODO:
 
