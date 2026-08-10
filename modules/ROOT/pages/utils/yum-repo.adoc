@@ -192,7 +192,7 @@ NOTE: Для мульти-архитектурного репозитория н
 
 == Подпись репозитория
 
-Чтобы создать цифровую подпись, достаточно выполнить команду `gpg -ad --batch --yes <PATH TO repomd.xml>`.
+Чтобы создать цифровую подпись, достаточно выполнить команду `gpg -ab --batch --yes <PATH TO repomd.xml>`.
 
 IMPORTANT: Убедитесь, что выбран правильный gpg-ключ.
 
@@ -200,7 +200,7 @@ IMPORTANT: Убедитесь, что выбран правильный gpg-кл
 
 Чтобы на клиенте начать использовать новый репозиторий, необходимо создать `<REPO>.repo` файл в папке `/etc/yum.repos.d`:
 
-[,ini]
+[,yum-repo]
 ----
 # File /etc/yum.repos.d/1bah.repo
 [1bah-repo]
@@ -217,13 +217,8 @@ gpgkey=https://1bah.github.io/public.key
 * `gpgcheck` -- Верифицировать ли gpg подпись (`0`/`1`)
 * `gpgkey` -- URL, по которому доступен публичный ключ, используемый при подписи репозитория
 
-// TODO
-[TIP.todo]
-====
-Ссылку на страницу про подписи
-====
-
 == Read more
 
 * https://github.com/1BAH/1bah.github.io/tree/main/rpm[Репозиторий для fenrir (C) 1bah]
 * http://createrepo.baseurl.org/[Wiki (C) Createrepo team]
+* xref:utils/gpg.adoc[GPG подписи]
