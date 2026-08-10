@@ -14,4 +14,12 @@
 * xref:utils/yum-repo.adoc[]
 
 .Cryptography
-* xref:crypto/keys.adoc[]
+* xref:crypto/hash.adoc[]
+* xref:crypto/el-curve.adoc[]
+* xref:crypto/asym-cyph.adoc[]
+* xref:crypto/sign.adoc[]
+* xref:utils/gpg.adoc[GPG подписи]
+
+.Protocols
+// * xref:protocol/ssh.adoc[]
+* xref:protocol/ssh-keys.adoc[]

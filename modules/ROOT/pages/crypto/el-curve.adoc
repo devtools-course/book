@@ -1,0 +1,43 @@
+= Эллиптические кривые
+:page-authors: Иван Калинин
+:description: Эллиптические кривые. Операции с точками
+
+Общий вид эллиптической кривой задается уравнением stem:[y^2 = x^3 + ax + b].
+
+Примерами таких кривых являются:
+
+* https://en.wikipedia.org/wiki/P-384[P-384]
+* https://en.wikipedia.org/wiki/Curve25519[Curve25519]
+
+// Padding
+{empty}
+
+++++
+<iframe src="https://www.geogebra.org/calculator/pehty3bd?embed" width="800" height="600" allowfullscreen style="border: 1px solid #e4e4e4;border-radius: 4px;" frameborder="0"></iframe>
+++++
+
+== Операции над точками на кривой
+
+Нуль::
+Нулем stem:[\mathcal{O}] для кривой считается точка лежащая на бесконечности. Ее можно представить следующим образом: если взять начало координат, разместить на северном полюсе шара, а все оставшиеся координаты перенести на шар через отображение радиуса координатной плоскости в соответствующий меридиан, то stem:[\mathcal{O}] будет в точности южным полюсом.
+
+Противоположная точка::
+Для точки stem:[\mathcal{P}] обратной будет симметричная ей относительно оси Ox. То есть для stem:[\mathcal{P}:=\langle x,y \rangle] выполняется stem:[\text{ -}\mathcal{P}=\langle x,\text{-}y \rangle].
+
+Сумма двух точек::
+Чтобы сложить две точки, через них проводится прямая и далее по трем точкам пересечения вычисляется значение суммы:
+
+.https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication[Image source]
+image::crypto/ECClines.webp[]
+
+====
+В первом случае stem:[\mathcal{P} + \mathcal{Q} = \text{-}\mathcal{R}]. То есть для вычисления суммы нашли третью точку пересечения с кривой и взяли ей противоположную.
+====
+
+Умножение на скаляр::
+Из операции сложения тривиально выводится операция умножения на скаляр: stem:[\mu \otimes \mathcal{P} := \underbrace{\mathcal{P} + \mathcal{P} + ... + \mathcal{P}}_{\mu \text{ times}}]
+
+
+== Read more
+
+* https://curves.xargs.org/[The Animated Elliptic Curve (C) Michael Driscoll]

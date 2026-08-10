@@ -1,0 +1,292 @@
+= GNU Privacy Guard
+:page-authors: Иван Калинин
+:description: GPG подпись
+
+Для подписывания файлов широко используется утилита `gpg`.
+
+Чтобы отобразить все доступные подписи, используйте следующую команду:
+
+[,console]
+----
+$ gpg --list-keys
+gpg: checking the trustdb
+gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+gpg: depth: 0  valid:   2  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 2u
+/root/.gnupg/pubring.kbx
+------------------------
+pub   ed25519 2026-08-10 [SC]
+      0423BE53A529AC081FD0F131C9EA16EA9EB1D164
+uid           [ultimate] My Name (some info) <add@example.com>
+sub   cv25519 2026-08-10 [E]
+
+pub   rsa4096 2026-08-10 [SC]
+      8491A7FB20700A494C927EB7520A0802F567A704
+uid           [ultimate] My Name (some info) <add@example.com>
+sub   rsa4096 2026-08-10 [E]
+----
+
+== Создание подписей
+
+Для создания используйте команду `gpg --full-generate-key`
+
+.Создание ECDSA подписи
+[%collapsible]
+====
+[,console]
+----
+$ gpg --full-generate-key
+gpg (GnuPG) 2.4.8; Copyright (C) 2025 g10 Code GmbH
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please select what kind of key you want:
+   (1) RSA and RSA
+   (2) DSA and Elgamal
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+   (9) ECC (sign and encrypt) *default*
+  (10) ECC (sign only)
+  (14) Existing key from card
+Your selection? 9
+Please select which elliptic curve you want:
+   (1) Curve 25519 *default*
+   (4) NIST P-384
+   (6) Brainpool P-256
+Your selection? 1
+Please specify how long the key should be valid.
+         0 = key does not expire
+      <n>  = key expires in n days
+      <n>w = key expires in n weeks
+      <n>m = key expires in n months
+      <n>y = key expires in n years
+Key is valid for? (0) 0
+Key does not expire at all
+Is this correct? (y/N) y
+
+GnuPG needs to construct a user ID to identify your key.
+
+Real name: My Name
+Email address: add@example.com
+Comment: some info
+You selected this USER-ID:
+    "My Name (some info) <add@example.com>"
+
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? o
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+gpg: /root/.gnupg/trustdb.gpg: trustdb created
+gpg: directory '/root/.gnupg/openpgp-revocs.d' created
+nbjgpg: revocation certificate stored as '/root/.gnupg/openpgp-revocs.d/0423BE53A529AC081FD0F131C9EA16EA9EB1D164.rev'
+public and secret key created and signed.
+
+pub   ed25519 2026-08-10 [SC]
+      0423BE53A529AC081FD0F131C9EA16EA9EB1D164
+uid                      My Name (some info) <add@example.com>
+sub   cv25519 2026-08-10 [E]
+----
+image::utils/gpg-pass-enter.png[]
+====
+
+.Создание RSA подписи
+[%collapsible]
+====
+[,console]
+----
+$ gpg --full-generate-key
+gpg (GnuPG) 2.4.8; Copyright (C) 2025 g10 Code GmbH
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please select what kind of key you want:
+   (1) RSA and RSA
+   (2) DSA and Elgamal
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+   (9) ECC (sign and encrypt) *default*
+  (10) ECC (sign only)
+  (14) Existing key from card
+Your selection? 1
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (3072) 4096
+Requested keysize is 4096 bits
+Please specify how long the key should be valid.
+         0 = key does not expire
+      <n>  = key expires in n days
+      <n>w = key expires in n weeks
+      <n>m = key expires in n months
+      <n>y = key expires in n years
+Key is valid for? (0) 0
+Key does not expire at all
+Is this correct? (y/N) y
+
+GnuPG needs to construct a user ID to identify your key.
+
+Real name: My Name
+Email address: add@example.com
+Comment: some info
+You selected this USER-ID:
+    "My Name (some info) <add@example.com>"
+
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? o
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+gpg: revocation certificate stored as '/root/.gnupg/openpgp-revocs.d/8491A7FB20700A494C927EB7520A0802F567A704.rev'
+public and secret key created and signed.
+
+pub   rsa4096 2026-08-10 [SC]
+      8491A7FB20700A494C927EB7520A0802F567A704
+uid                      My Name (some info) <add@example.com>
+sub   rsa4096 2026-08-10 [E]
+----
+image::utils/gpg-pass-enter.png[]
+====
+
+== Подпись файла
+
+Разберем необходимые флаги для подписания файла
+
+-a, --armor::
+Вместо бинарного формата используется текстовый на основе символов ASCII, который можно передавать на другие устройства.
+
+-o, --output <FILENAME>::
+Записать подпись в соответствующий файл
+
+-s, --sign::
+Подписать файл
+
+-b, --detach-sign::
+Не включать исходный файл в вывод
+
+--clear-sign::
+Вывести в формате cleartext подпись
+
+Попробуем подписать файл:
+
+[,console]
+----
+$ echo 1234567890 > msg.txt
+$ gpg -abs msg.txt
+$ ls
+msg.txt  msg.txt.asc
+$ gpg --clear-sign msg.txt
+File 'msg.txt.asc' exists. Overwrite? (y/N) N
+Enter new filename: msg.txt.asc.1
+$ cat msg.txt.asc
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQEI75TpSmsCB/Q8THJ6hbqnrHRZAUCannYiwAKCRDJ6hbqnrHR
+ZN+UAP9dIdmXGsGSvM7ex32pnL/hMxMntd8dexvy0ryVTfa4pAEAkW+5uJOrKI/2
+Ifsgtc0kez2rIUQpsU9/yA3jzC3uLgI=
+=hgTt
+-----END PGP SIGNATURE-----
+$ cat msg.txt.asc.1
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+1234567890
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQQEI75TpSmsCB/Q8THJ6hbqnrHRZAUCannYuQAKCRDJ6hbqnrHR
+ZMHAAP9EUbDi6yny4VICA4C4CdhaWjzJts6li1pVNjvDmiDf6gD/f7GNTC8zG/+L
+IbXd2db6rqPpcRRPkbJVkQje3/XOUQk=
+=uPKq
+-----END PGP SIGNATURE-----
+----
+
+== Выгрузка ключей
+
+Для выгрузки ключей используются флаги `--export` и `--export-secret-keys`
+
+[,console]
+----
+$ gpg --list-keys
+/root/.gnupg/pubring.kbx
+------------------------
+pub   ed25519 2026-08-10 [SC]
+      0423BE53A529AC081FD0F131C9EA16EA9EB1D164
+uid           [ultimate] My Name (some info) <add@example.com>
+sub   cv25519 2026-08-10 [E]
+
+pub   rsa4096 2026-08-10 [SC]
+      8491A7FB20700A494C927EB7520A0802F567A704
+uid           [ultimate] My Name (some info) <add@example.com>
+sub   rsa4096 2026-08-10 [E]
+
+$ gpg --export --armor 0423BE53A529AC081FD0F131C9EA16EA9EB1D164
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mDMEannHBhYJKwYBBAHaRw8BAQdAjLWPbrDdZ0Zkae9dL6v5uNp+YM9hG76ckUsW
++ktlmfO0JU15IE5hbWUgKHNvbWUgaW5mbykgPGFkZEBleGFtcGxlLmNvbT6IkAQT
+FgoAOBYhBAQjvlOlKawIH9DxMcnqFuqesdFkBQJqeccGAhsDBQsJCAcCBhUKCQgL
+AgQWAgMBAh4BAheAAAoJEMnqFuqesdFkFfgBAJuHZwEaUsn9ZH0+iKEX8EIyaGSV
+VK8PZRVzfp5NdDCAAP91ehtwrlhpOIBfQ08psTz9WIXulCAlOAD9FjRW/miIDrg4
+BGp5xwYSCisGAQQBl1UBBQEBB0Cu1LgPLAqBmHWCjXjB4Nnsw6PCCevQhksQ1hR5
+EPJzIwMBCAeIeAQYFgoAIBYhBAQjvlOlKawIH9DxMcnqFuqesdFkBQJqeccGAhsM
+AAoJEMnqFuqesdFkOE0A/i4+IQHl8d1xxCy3Vi81j/LH3Q952c2W0VHqed4K+DHw
+AP9UYdJhScL1gSvvf35ZklkT5exUOq4XPIV68FRlbCwlDg==
+=BjRf
+-----END PGP PUBLIC KEY BLOCK-----
+----
+
+В коде выше мы сначала узнали все публичные ключи, которые доступны, а далее экспортировали конкретный по ID.
+
+В случае приватных необходимо использовать уже второй флаг:
+
+[,console]
+----
+$ gpg --export-secret-keys --armor 0423BE53A529AC081FD0F131C9EA16EA9EB1D164
+-----BEGIN PGP PRIVATE KEY BLOCK-----
+
+lIYEannHBhYJKwYBBAHaRw8BAQdAjLWPbrDdZ0Zkae9dL6v5uNp+YM9hG76ckUsW
++ktlmfP+BwMCQDNkWJ1F5lP/E1io+Zaps6ngrzQ3d35CCkSBF187N58Ot56M82u6
+4XpTYCoFQlywUB14srbPeNhR/Tq8AGYI8U3NDE/xr/I80+vqJDD0k7QlTXkgTmFt
+ZSAoc29tZSBpbmZvKSA8YWRkQGV4YW1wbGUuY29tPoiQBBMWCgA4FiEEBCO+U6Up
+rAgf0PExyeoW6p6x0WQFAmp5xwYCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AA
+CgkQyeoW6p6x0WQV+AEAm4dnARpSyf1kfT6IoRfwQjJoZJVUrw9lFXN+nk10MIAA
+/3V6G3CuWGk4gF9DTymxPP1Yhe6UICU4AP0WNFb+aIgOnIsEannHBhIKKwYBBAGX
+VQEFAQEHQK7UuA8sCoGYdYKNeMHg2ezDo8IJ69CGSxDWFHkQ8nMjAwEIB/4HAwLs
+gFErNIysRP+6IdmluiyAMUsQ+izIg6AB5dLTLjrm42R5m88FeMKEPFCYptTBLlHq
+bOBgXLekBltMq2mi+lZk12d1Vq1XUyH2LvBMkb3YiHgEGBYKACAWIQQEI75TpSms
+CB/Q8THJ6hbqnrHRZAUCannHBgIbDAAKCRDJ6hbqnrHRZDhNAP4uPiEB5fHdccQs
+t1YvNY/yx90PednNltFR6nneCvgx8AD/VGHSYUnC9YEr739+WZJZE+XsVDquFzyF
+evBUZWwsJQ4=
+=1GEI
+-----END PGP PRIVATE KEY BLOCK-----
+----
+
+IMPORTANT: Разглашение приватного ключа скомпрометирует вашу подпись. *Никогда* не показывайте приватный ключ посторонним!
+
+== Проверка подписи
+
+Для проверки необходимо сначала подгрузить публичный ключ. Пусть экспортированный публичный ключ лежит в `key.pub`, тогда достаточно выполнить следующие команды:
+
+[,console]
+----
+$ gpg --import key.pub
+gpg: key C9EA16EA9EB1D164: public key "My Name (some info) <add@example.com>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+$ gpg --verify msg.asc
+gpg: Signature made Mon 10 Aug 2026 16:57:13 MSK
+gpg:                using EDDSA key 0423BE53A529AC081FD0F131C9EA16EA9EB1D164
+gpg: Good signature from "My Name (some info) <add@example.com>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 0423 BE53 A529 AC08 1FD0  F131 C9EA 16EA 9EB1 D164
+----
+
+== Read more
+
+* xref:crypto/sign.adoc[]
