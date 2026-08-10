@@ -3,6 +3,7 @@
     "antora": "3.1.14"
   },
   "dependencies": {
-    "@antora/lunr-extension": "^1.0.0-alpha.13"
+    "@antora/lunr-extension": "^1.0.0-alpha.13",
+    "antora-shiki-extension": "^1.0.0"
   }
 }

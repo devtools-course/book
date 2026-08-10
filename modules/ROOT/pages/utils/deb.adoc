@@ -1,0 +1,137 @@
+= DEB пакеты
+:page-authors: Иван Калинин
+:description: Написание собственных deb-пакетов
+
+Linux дистрибутивы debian семейства используют пакетный менеджер `dpkg`. На базе него построены пакетные менеджеры `apt-get` и `apt`.
+
+== Устройство исходников deb пакетов
+
+Для сборки deb-пакета используют следующую структуру:
+
+[,text,subs="+macros"]
+----
+icon:file-archive[] package.deb
+├─ icon:folder[] DEBIAN
+│  └─ icon:file[] control
+└─ ...
+----
+
+Папка `DEBIAN` содержит мета-информацию о пакете, записанную в файле `control`, а также может содержать дополнительные скрипты (о них поговорим позже).
+
+Вне этой папки располагаются файлы так, как если бы корень архива был корнем файловой системы:
+
+[,console]
+----
+$ tree deb-src
+deb-src
+├── DEBIAN
+│   └── control
+├── etc
+│   └── fenrir
+│       ├── lokirc
+│       └── walk.conf
+└── usr
+    ├── bin
+    │   ├── fenrir
+    │   ├── loki
+    │   └── update-fenrir
+    └── share
+        ├── doc
+        │   └── fenrir
+        │       └── LICENSE
+        └── man
+            └── man1
+                ├── fenrir.1
+                └── loki.1
+----
+
+Установка подобного пакета представляет из себя просто разархивацию файлов в корень и дополнительно вызов скриптов при наличии.
+
+== Мета-информация
+
+Основные параметры:
+
+[%autowidth,]
+|===
+h| Name h| Description
+| `Package` | Имя пакета
+| `Version` | Версия пакета
+| `Depends` | Зависимости
+| `Architecture` | Под какую архитектуру собран проект. В случае платформенно независимого кода указывается `all`
+| `Maintainer` | Автор в формате `Name Surname <email>`
+| `Description` | Описание пакета
+
+|===
+
+Зависимости проекта описываются через запятую и для контроля версий можно использовать модификаторы `=`, `>`, `<`, `>=`, `\<=`. Например, если пакет зависит от `bash` версии хотя бы 5 и `curl`, то будет такая строчка: `Depends: bash (>= 5.0.0), curl`.
+
+[,deb-control]
+----
+Package: fenrir-1bah
+Version: 2026.0+2
+Depends: bash (>= 5.0.0), curl
+Architecture: all
+Maintainer: Iwan Kalinin <koefic.cien@gmail.com>
+Description: A lightweight general purpose testing tool
+----
+
+== Дополнительные скрипты
+Если в `rpm` пакетах использовались секции `pre`, `post`, `preun` и `postun`, то в `deb` пакетах они заменены на соответствующие скрипты в папке `DEBIAN`.
+
+preinst::
+Выполняется перед установкой. Часто используется, что приостановить сервисы до момента окончания установки.
+
+postinst::
+Выполняется после установки. Часто используется, чтобы запустить сервисы необходимые для работы пакета.
+
+prerm::
+Выполняется перед удалением. Часто используется, чтобы остановить сервисы, ассоциированные с пакетом.
+
+postrm::
+Выполняется после удаления. Часто используется, чтобы удалить различные симлинки и файлы, ассоциированные с пакетом.
+
+Как и в случае `rpm` пакетов возникает потребность в определении того, пакет сейчас обновляется или удаляется. Для этого в `$1` передается информация о том, что именно сейчас происходит:
+
+preinst::
+* install
+* upgrade
+* abort-upgrade
+
+postinst::
+* configure
+* abort-upgrade
+* abort-remove
+* abort-deconfigure
+
+prerm::
+* remove
+* upgrade
+* deconfigure
+* failed-upgrade
+
+postrm::
+* purge
+* remove
+* upgrade
+* failed-upgrade
+* abort-install
+* abort-upgrade
+* disappear
+
+== Работа с dpkg
+
+* `dpkg -i PACKAGE`  --  установить пакет (install)
+* `dpkg -r PACKAGE`  --  удалить пакет (remove: только бинарники)
+* `dpkg -P PACKAGE`  --  удалить пакет (purge: remove + конфиги)
+* `dpkg -s PACKAGE`  --  получить метаданные пакета (show info)
+* `dpkg -S FILE`  --  найти какой пакет поставляет файл (search)
+* `dpkg -b DIR`  --  собрать пакет (build)
+
+Последняя команда позволит собрать `deb` пакет из директории выше.
+
+
+== Read more
+
+* https://www.debian.org/doc/debian-policy/ch-controlfields.html[Параметры пакета (C) Debian docs]
+* https://www.debian.org/doc/manuals/debian-faq/pkg-basics.en.html[Мануал пакетных менеджеров (C) Debian docs]
+* https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html[Этапы сборки установки и удаления пакета (C) Debian docs]

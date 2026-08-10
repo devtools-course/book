@@ -11,3 +11,18 @@
 
 .Packages & Archives
 * xref:utils/rpm.adoc[]
+* xref:utils/yum-repo.adoc[]
+* xref:utils/deb.adoc[]
+* xref:utils/apt.adoc[]
+* xref:utils/apt-repo.adoc[]
+
+.Cryptography
+* xref:crypto/hash.adoc[]
+* xref:crypto/el-curve.adoc[]
+* xref:crypto/asym-cyph.adoc[]
+* xref:crypto/sign.adoc[]
+* xref:utils/gpg.adoc[GPG подписи]
+
+.Protocols
+// * xref:protocol/ssh.adoc[]
+* xref:protocol/ssh-keys.adoc[]

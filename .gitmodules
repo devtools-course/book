@@ -1,0 +1,3 @@
+[submodule "hl"]
+	path = shiki-highlight-theme
+	url = https://github.com/1BAH/shiki-highlight-theme.git

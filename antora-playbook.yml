@@ -4,7 +4,7 @@ site:
 
 content:
   sources:
-    - url: .
+    - url: https://github.com/devtools-course/book
       branches: [ '*' ]
 ui:
   bundle:
@@ -18,11 +18,44 @@ asciidoc:
     experimental: ''
     page-pagination: ''
     allow-uri-read: ''
+    source-highlighter: shiki
+    icons: font
   extensions:
     - ./lib/remote-include-processor.js
 
 antora:
   extensions:
+    - require: 'antora-shiki-extension'
+      use_line_numbers: true
+      theme: taekwandodo-light
+      languages:
+        - asciidoc
+        - java
+        - cpp
+        - c
+        - bash
+        - console
+        - json
+        - xml
+        - yaml
+        - toml
+        - ini
+        - cmake
+        - make
+        - haskell
+      register_languages:
+        - id: 'rpmspec'
+          scope_name: 'source.spec'
+          grammar_path: ./langs/rpmspec.tmLanguage.json
+          alias: [ 'rpmspec' ]
+        - id: 'yum-repo'
+          scope_name: 'source.ini'
+          grammar_path: ./node_modules/shiki/languages/ini.tmLanguage.json
+          alias: [ 'yum-repo' ]
+        - id: 'deb-control'
+          scope_name: 'source.yaml'
+          grammar_path: ./node_modules/shiki/languages/yaml.tmLanguage.json
+          alias: [ 'deb-control']
     - require: '@antora/lunr-extension'
       languages: [en, ru]
 

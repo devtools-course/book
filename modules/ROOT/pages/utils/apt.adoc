@@ -1,0 +1,71 @@
+= Пакетный менеджер apt
+:page-authors: Иван Калинин
+:description: Пакетные менеджеры apt и apt-get, apt-search
+
+Если `dpkg` является низкоуровневым пакетным менеджером и позволяет оперировать файлами, находящимися непосредственно на устройстве, то `apt` уже добавляет возможность работать с удаленными хранилищами пакетов.
+
+Команда `apt` является улучшением `apt-get` и `apt-cache`. Она имеет более удобный вывод для человека и улучшенную подсветку синтаксиса. Однако для скриптов предпочтительным является использование `apt-get`.
+
+|===
+h| New h| Old
+| apt install
+| apt-get install
+| apt remove
+| apt-get remove
+| apt purge
+| apt-get purge
+| apt update
+| apt-get update
+| apt upgrade
+| apt-get upgrade
+| apt autoremove
+| apt-get autoremove
+| apt clean
+| apt-get clean
+| apt search
+| apt-cache search
+| apt show
+| apt-cache search
+|===
+
+CAUTION: При установке пакетов `apt` и `apt-get` требуют подтверждения через ввод пользователя, поэтому добавляйте флаг `-y` в скрипта, чтобы сразу передать опцию `Y`.
+
+Семантика команд `install`, `remove`, `purge`, `search`, `show` сохраняется из `dpkg`. Разберемся, что делают новые команды.
+
+update::
+Обновляются индексы удаленных репозиториев
+
+upgrade::
+Обновляются все пакеты. Чтобы обновить только один пакет, используйте `install` с опцией `--only-upgrade <PACKAGE NAME>`.
+
+autoremove::
+Удалить автоматически установленные пакеты, которые больше не требуются. Такие пакеты могут появиться, когда вместе с некоторым пакетом устанавливаются и его зависимости.
+
+clean::
+Подчищает кэши
+
+== Удаленные репозитории
+
+Информация о доступных удаленных репозиториях сохраняется в папке `/etc/apt/sources.list.d`:
+
+[,console]
+----
+$ ls /etc/apt/sources.list.d
+ubuntu.sources custom.list
+$ cat /etc/apt/sources.list.d/custom.list
+deb [signed-by=/usr/share/keyrings/custom.gpg] https://download.example.com/ubuntu stable main
+----
+
+Чтобы добавить новый репозиторий с `deb` пакетами необходимо сначала скачать его публичный ключ, использующийся для подписи пакетов. После чего нужно создать `<REPO NAME>.list` файл в папке `/etc/apt/sources.list.d` и указать в нем следующее:
+
+* `deb`  --  репозиторий хранит `deb` пакеты
+* `[signed-by=/usr/share/keyrings/custom.gpg]`  --  какой публичный ключ использовать для верификации подписи
+* `URL`  --  URL адрес репозитория
+* `\https://download.example.com/ubuntu`  --  какую вариант поставки (suite) использовать: может быть как конкретная версия ОС (`jammy`, `bookworm`, etc.), так и динамический тег (`stable`, `testing`, etc.)
+* `main`  --  какую конкретно компоненту репозитория использовать
+
+После добавления нового репозитория не забудьте выполнить `apt update`, иначе пакеты из него будут недоступны.
+
+== Read more
+
+* xref:utils/deb.adoc[]

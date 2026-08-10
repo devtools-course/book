@@ -1,0 +1,113 @@
+= SSH ключи
+:page-authors: Иван Калинин
+:description: SSH ключи. Утилита ssh-keygen
+
+== Host keys
+
+Ключи хоста располагаются в папке `/etc/ssh`:
+
+[,console]
+----
+$ ls /etc/ssh
+moduli      ssh_config.d        ssh_host_ecdsa_key.pub  ssh_host_ed25519_key.pub  ssh_host_rsa_key.pub  sshd_config
+ssh_config  ssh_host_ecdsa_key  ssh_host_ed25519_key    ssh_host_rsa_key          ssh_import_id         sshd_config.d
+----
+
+NOTE: У вас может вместо `ecdsa` быть использован `dsa`. В новых версиях ОС `dsa` признан устаревшим и заменен на `ecdsa`.
+
+Ключи располагаются парами: `<NAME>` -- приватный и `<NAME>.pub` -- публичный.
+
+[,console]
+----
+$ cat /etc/ssh/ssh_host_ed25519_key
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACCc1CZ8y9v4LoFFKAFovdLpYuOfJBgOdxwUJVkK1am9XwAAAJjaPN8Q2jzf
+EAAAAAtzc2gtZWQyNTUxOQAAACCc1CZ8y9v4LoFFKAFovdLpYuOfJBgOdxwUJVkK1am9Xw
+AAAEAjlDb0teG+o4xEYe+2QxezjpufApn2KLO+WN04pfXLG5zUJnzL2/gugUUoAWi90uli
+458kGA53HBQlWQrVqb1fAAAAEXJvb3RAMjVmYWM3YWRmYWIwAQIDBA==
+-----END OPENSSH PRIVATE KEY-----
+----
+
+[,console]
+----
+$ cat /etc/ssh/ssh_host_ed25519_key.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJzUJnzL2/gugUUoAWi90uli458kGA53HBQlWQrVqb1f root@25fac7adfab0
+----
+
+CAUTION: *Никогда* не публикуйте свои приватные ключи. В случае же утечки сразу перевыпускайте новые.
+
+Чтобы перевыпустить ключи удалить старые и заново их создать (если не удалить, то ничего не произойдет)
+
+[,console]
+----
+$ rm /etc/ssh/ssh_host_*
+$ ssh-keygen -A
+ssh-keygen: generating new host keys: RSA ECDSA ED25519
+$ cat /etc/ssh/ssh_host_ed25519_key
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACB+pAxXMMzjPdFIyvn8hJCgcYknqh/WZ3a9sVQOCze/WgAAAJjMUWfDzFFn
+wwAAAAtzc2gtZWQyNTUxOQAAACB+pAxXMMzjPdFIyvn8hJCgcYknqh/WZ3a9sVQOCze/Wg
+AAAEBygaNu4N83MU3qZfnZGPSiHw/n1X0RNYOMkJ7ZCgezYH6kDFcwzOM90UjK+fyEkKBx
+iSeqH9Zndr2xVA4LN79aAAAAEXJvb3RAMjVmYWM3YWRmYWIwAQIDBA==
+-----END OPENSSH PRIVATE KEY-----
+----
+
+== User keys
+
+Пользовательские же ключи по умолчанию располагаются в `~/.ssh` папке.
+
+[,console]
+----
+$ ls ~/backup/laptop/.ssh
+server           config      id_ed25519.pub  id_rsa.pub  idris.pub    known_hosts.old
+authorized_keys  id_ed25519  id_rsa          idris       known_hosts
+----
+
+Для генерации пары ключей используется команда `ssh-keygen`. Основные опции при создании ключа это:
+
+* `-t dsa|rsa|ecdsa|ed25519` -- выбор какой именно алгоритм будет использоваться
+
+NOTE: `ecdsa` использует кривую NIST, `ed25519` -- Curve25519
+
+* `-b BITS` -- количество бит стойкости (разрядность хэш-фунции).
+** Для `rsa` и `dsa` используется от 1024 бит (Для `dsa` использование меньше 4098 битов не надежно)
+** Для `ecdsa` используется 256, 384 или 512 битов
+** Алгоритм `ed25519` не поддерживает выбор, т.к. использует всегда 256 битов
+* `-f <FILENAME>` путь до файла, в котором будет сохранен приватный ключ (публичный будет с префиксом `.pub`)
+
+[,console]
+----
+$ ssh-keygen -t ecdsa -b 384 -f ~/.ssh/qwerty
+Generating public/private ecdsa key pair.
+Enter passphrase for "/root/.ssh/qwerty" (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /root/.ssh/qwerty
+Your public key has been saved in /root/.ssh/qwerty.pub
+The key fingerprint is:
+SHA256:EhwTLyhBsGFukWCF7BhWXU1x9DFiad72odnpA7m5hsE root@25fac7adfab0
+The key's randomart image is:
++---[ECDSA 384]---+
+|**Bo. =oooo=.o   |
+|=B.. + + .ooo o  |
+|=+. . + . o ..   |
+|o. .   o   . o . |
+|      . S . . * o|
+|       .   E = + |
+|            o =  |
+|           . + o |
+|            ... .|
++----[SHA256]-----+
+$ ls ~/.ssh
+qwerty  qwerty.pub
+----
+
+Если не хотите задавать пароль для ключа, то просто дважды нажмите kbd:[Enter].
+
+CAUTION: Если вы забыли пароль к ключу, то восстановить его не получится и придется перегенерировать.
+
+== Read more
+
+* xref:crypto/sign.adoc[]
+* xref:crypto/asym-cyph.adoc[]
