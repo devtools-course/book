@@ -1,0 +1,88 @@
+= Репозитории apt
+:page-authors: Иван Калинин
+:description: Удаленный репозиторий apt
+
+== Структура репозитория
+
+Удаленный репозиторий состоит из двух поддиректорий: `pool` хранит deb-пакеты, а `dists` хранит мета-информацию о вариантах поставки (suites):
+
+[,text,subs="+macros"]
+----
+icon:folder[] repo
+├─ icon:folder[] dists
+│  └─ icon:folder[] stable
+│     ├─ icon:lock[] InRelease
+│     ├─ icon:folder[] main
+│     │  └─ icon:folder[] binary-all
+│     │     ├─ icon:file-code[] Packages
+│     │     └─ icon:file-code[] Packages.gz
+│     ├─ icon:file-code[] Release
+│     └─ icon:lock[] Release.gpg
+├─ icon:folder[] pool
+│  └─ icon:folder[] main
+│     └─ icon:file-archive[] fenrir-1bah-2026.0+2_all.deb
+└─ icon:file-text[] release.conf
+----
+
+Хранение пакетов разделяется по компонентам. На примере выше есть только одна компонента  --  `main`.
+
+== Создание и обновление репозитория
+
+Для автоматической генерации файлов с мета-информацией используется утилита `apt-ftparchive`.
+
+Чтобы создать индекс пакетов для каждой компоненты, необходимо выполнить команду `apt-ftparchive --arch <ARCH> packages pool/main > dists/stable/main/binary-<ARCH>/Packages`
+
+[,console]
+----
+$ cat dists/stable/main/binary-all/Packages
+Package: fenrir-1bah
+Architecture: all
+Version: 2026.0+2
+Maintainer: Iwan Kalinin <koefic.cien@gmail.com>
+Depends: bash (>= 5.0.0), curl
+Filename: pool/main/fenrir-1bah-2026.0+2_all.deb
+Size: 26340
+MD5sum: 692af142897f8dcd7c8c9248903a0c64
+SHA1: d954f08ddb60c91cafb102421d8abe10e99c923c
+SHA256: 3e079ab4306ec001ff4d680b26ca72c86c3c1074ec23e3b6f4553e3c1ddbaa6f
+SHA512: 06f2e1b9b0c03e609d60db7b904cb541e0791e7d956450cd10449c127b2ab86eb35476205541fc3ec991f4fa50d6d48a4cbbac911461ced924a369445e2dca5e
+Description: A lightweight general purpose testing tool
+----
+
+NOTE: Чтобы данная утилита работала корректно, имя пакетов должно иметь вид `<NAME>_<ARCH>.deb`
+
+Для создания `Packages.gz` используйте команду `gzip`.
+
+// TODO
+[TIP.todo]
+====
+Сcыль на gzip
+====
+
+Для создания общего индекса потребуется уже команда
+`apt-ftparchive -c <PATH TO release.conf> release dists/stable > dists/stable/Release`
+
+Конфиг будет иметь следующее содержание:
+
+[,haskell]
+----
+APT::FTPArchive::Release {
+  Origin "1bah";
+  Label "1bah registry";
+  Suite "stable";
+  Codename "stable";
+  Architectures "all";
+  Components "main";
+  Description "deb packages by 1bah";
+};
+----
+
+Из незнакомых тегов для нас только `Origin`  --  название организации, развивающей проект, и `Label`  --  имя для репозитория.
+
+Файлы `Release.gpg` и `InRelease`  --  это gpg подпись файла `Release`. Первый содержит только подпись, а второй исходный файл + подпись.
+
+== Read more
+
+* xref:utils/apt.adoc[]
+* xref:utils/gpg.adoc[]
+* https://github.com/1BAH/1bah.github.io/tree/main/deb[Репозиторий для fenrir (C) 1bah]

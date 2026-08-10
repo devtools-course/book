@@ -12,6 +12,9 @@
 .Packages & Archives
 * xref:utils/rpm.adoc[]
 * xref:utils/yum-repo.adoc[]
+* xref:utils/deb.adoc[]
+* xref:utils/apt.adoc[]
+* xref:utils/apt-repo.adoc[]
 
 .Cryptography
 * xref:crypto/hash.adoc[]
