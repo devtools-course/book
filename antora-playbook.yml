@@ -42,11 +42,20 @@ antora:
         - ini
         - cmake
         - make
+        - haskell
       register_languages:
         - id: 'rpmspec'
           scope_name: 'source.spec'
           grammar_path: ./langs/rpmspec.tmLanguage.json
-          alias: ['rpmspec']
+          alias: [ 'rpmspec' ]
+        - id: 'yum-repo'
+          scope_name: 'source.ini'
+          grammar_path: ./node_modules/shiki/languages/ini.tmLanguage.json
+          alias: [ 'yum-repo' ]
+        - id: 'deb-control'
+          scope_name: 'source.yaml'
+          grammar_path: ./node_modules/shiki/languages/yaml.tmLanguage.json
+          alias: [ 'deb-control']
     - require: '@antora/lunr-extension'
       languages: [en, ru]
 
