@@ -1,0 +1,57 @@
+= Пакетные менеджеры yum, dnf
+:page-authors: Иван Калинин
+:description: Пакетные менеджеры yum и dnf
+
+Если `rpm` является низкоуровневым пакетным менеджером и позволяет оперировать файлами, находящимися непосредственно на устройстве, то `yum` уже добавляет возможность работать с удаленными хранилищами пакетов. Утилита `dnf` является развитием `yum`, одним из главных преимуществ которой является более высокая скорость работы.
+
+Основные команды пакетных менеджеров
+
+install <PACKAGE>::
+Установить пакет
+
+remove <PACKAGE>::
+Удалить пакет
+
+update, upgrade::
+Обновляются все пакеты. Если передать конкретное название пакета, то обновиться только он (`dnf update gcc`)
+
+search <COMMAND>::
+Поиск пакета, предоставляющего команду
+
+clean all::
+Подчищает кэши
+
+== Удаленные репозитории
+
+Информация о доступных удаленных репозиториях сохраняется в папке `/etc/yum.repos.d/`:
+
+[,console]
+----
+$ /bin/ls /etc/yum.repos.d/
+1bah.repo					     cuda-fedora42.repo	 fedora-updates-testing.repo		rpmfusion-nonfree.repo
+_copr:copr.fedorainfracloud.org:peterwu:iosevka.repo  docker-ce.repo		 rpmfusion-free.repo			rpmfusion-nonfree-steam.repo
+_copr:copr.fedorainfracloud.org:phracek:PyCharm.repo  fedora-cisco-openh264.repo  rpmfusion-free-updates.repo		rpmfusion-nonfree-updates.repo
+_copr:copr.fedorainfracloud.org:smallcms:dotool.repo  fedora.repo		 rpmfusion-free-updates-testing.repo	rpmfusion-nonfree-updates-testing.repo
+cuda-fedora41.repo				     fedora-updates.repo	 rpmfusion-nonfree-nvidia-driver.repo	vscode.repo
+$ cat /etc/yum.repos.d/cuda-fedora42.repo
+[cuda-fedora42-x86_64]
+name=cuda-fedora42-x86_64
+baseurl=https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64
+enabled=1
+gpgcheck=1
+gpgkey=https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64/D42D0685.pub
+----
+
+Чтобы добавить новый репозиторий с `rpm` пакетами нужно создать `<REPO NAME>.repo` файл в папке `/etc/yum.repos.d` и указать в нем следующее:
+
+* `[cuda-fedora42-x86_64]`  --  Краткое имя репозитория
+* `[signed-by=/usr/share/keyrings/custom.gpg]`  --  какой публичный ключ использовать для верификации подписи
+* `name=cuda-fedora42-x86_64`  --  развернутое имя репозитория
+* `baseurl=https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64`  --  URL репозитория
+* `enabled=1`  --  использовать репозиторий (если поставить `0`, то репозиторий использоваться не будет)
+* `gpgcheck=1`  --  проверять GPG подпись
+* `gpgkey=https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64/D42D0685.pub`  --  URL публично ключа, которым был подписан репозиторий
+
+== Read more
+
+* xref:utils/rpm.adoc[]

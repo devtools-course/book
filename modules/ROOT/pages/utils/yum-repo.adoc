@@ -222,3 +222,4 @@ gpgkey=https://1bah.github.io/public.key
 * https://github.com/1BAH/1bah.github.io/tree/main/rpm[Репозиторий для fenrir (C) 1bah]
 * http://createrepo.baseurl.org/[Wiki (C) Createrepo team]
 * xref:utils/gpg.adoc[GPG подписи]
+* xref:utils/yum.adoc[]
