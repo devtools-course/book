@@ -3,6 +3,9 @@
 * xref:code-of-conduct.adoc[Code of conduct]
 * xref:dev-guides.adoc[Гайды по разработке]
 
+.Git
+* xref:git.adoc[]
+
 .Linux FS
 * xref:linux/file-types.adoc[Типы файлов]
 * xref:linux/fhs.adoc[FHS]

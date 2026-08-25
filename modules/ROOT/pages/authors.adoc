@@ -8,4 +8,10 @@
 GitHub: https://github.com/1BAH[1BAH] +
 GitLab: https://gitlab.com/lBAH[lBAH]
 
+== Виктория Попова
+Почта: v.popova@phystech.edu +
+GitHub: https://github.com/cerisesav[cerisesav] +
+GitLab: https://gitlab.com/cerisesav[karmaxxkoma] +
+Telegram: https://t.me/karmaxxkoma
+
 _Тут типо инфа.._
