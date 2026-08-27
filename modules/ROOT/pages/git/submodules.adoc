@@ -1,0 +1,31 @@
+= Submodules
+:page-authors: Виктория Попова
+:description: Git. Сабмодули
+
+
+== Сабмодули (submodules)
+
+Иногда нужно включить один Git-репозиторий в состав другого - например, общую библиотеку, которая живёт отдельно. Для этого есть *сабмодули*:
+
+[,console]
+----
+$ git submodule add git@github.com:user/library.git libs/library
+----
+
+Внутри вашего репозитория появится папка `libs/library` с содержимым другого репозитория, а сам факт «здесь сабмодуль на такой-то коммит такого-то репозитория» запишется в файл `.gitmodules` (его надо закоммитить).
+
+Клонирование репозитория с сабмодулями:
+
+[,console]
+----
+$ git clone --recurse-submodules git@github.com:user/project.git
+# или, если забыли:
+$ git submodule update --init --recursive
+----
+
+Обновить сабмодули до свежих версий из их удалённых репозиториев:
+
+[,console]
+----
+$ git submodule update --remote
+----

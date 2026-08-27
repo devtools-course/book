@@ -1,0 +1,30 @@
+= Bundles
+:page-authors: Виктория Попова
+:description: Git. Bundles
+
+
+== Bundles
+
+Bundle - это архив с частью репозитория (или всем целиком), который можно передать без сетевого соединения. Полезно, когда надо скинуть репу по флешке коллеге без интернета.
+
+[,console]
+----
+$ git bundle create repo.bundle --all               <1>
+$ git bundle create fix.bundle main..fix-x          <2>
+----
+<1> Весь репозиторий в один файл.
+<2> Только коммиты, которые есть в fix-x, но нет в main.
+
+Применение:
+
+[,console]
+----
+$ git clone repo.bundle new-project                 <1>
+$ git bundle verify fix.bundle                      <2>
+$ git fetch fix.bundle fix-x:fix-x                  <3>
+----
+<1> Склонировать из bundle, как из обычного remote.
+<2> Проверить, что bundle не побит.
+<3> Забрать из bundle ветку fix-x в свою локальную fix-x.
+
+Штука редкая, но иногда очень выручает - особенно в местах с плохим интернетом.

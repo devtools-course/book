@@ -1,5 +1,5 @@
 = SSH ключи
-:page-authors: Иван Калинин
+:page-authors: Иван Калинин, Виктория Попова
 :description: SSH ключи. Утилита ssh-keygen
 
 == Host keys
@@ -106,6 +106,55 @@ qwerty  qwerty.pub
 Если не хотите задавать пароль для ключа, то просто дважды нажмите kbd:[Enter].
 
 CAUTION: Если вы забыли пароль к ключу, то восстановить его не получится и придется перегенерировать.
+
+== SSH Agent
+
+`ssh-agent` - это фоновый процесс, который держит расшифрованный ключ в памяти, чтобы не вводить passphrase каждый раз:
+
+[,console]
+----
+$ eval "$(ssh-agent -s)"
+Agent pid 12345
+$ ssh-add ~/.ssh/id_ed25519
+----
+
+
+== Публикация ключа на GitHub
+
+Скопируйте содержимое *публичного* ключа - это файл с расширением `.pub`. *Никогда* не публикуйте файл без `.pub` - это приватный ключ:
+
+[,console]
+----
+$ cat ~/.ssh/id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... ivan@example.com
+----
+
+Затем на GitHub: *Settings \-> SSH and GPG keys \-> New SSH key*, вставьте содержимое в поле *Key*, придумайте название (обычно имя компьютера) и сохраните.
+
+== Публикация ключа на GitLab
+
+Скопируйте содержимое *публичного* ключа - это файл с расширением `.pub`. *Никогда* не публикуйте файл без `.pub` - это приватный ключ:
+
+image::git/gl-navbar-avatar.png[width=150,float=right]
+
+[,console]
+----
+$ cat ~/.ssh/id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... ivan@example.com
+----
+
+
+Затем на GitLab нажмите на аватарку в верхней панели: *Edit profile \-> Access \-> SSH keys \-> Add new key*, вставьте содержимое в поле *Key*, придумайте название (обычно имя компьютера) и сохраните.
+
+== Проверка соединения
+
+[,console]
+----
+$ ssh -T git@github.com
+Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+----
+
+Если увидели такое сообщение - всё работает. При первом соединении Git спросит, доверяете ли вы отпечатку сервера - отвечайте `yes`.
 
 == Read more
 
