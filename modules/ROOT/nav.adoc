@@ -3,6 +3,28 @@
 * xref:code-of-conduct.adoc[Code of conduct]
 * xref:dev-guides.adoc[Гайды по разработке]
 
+.Compilation
+
+* xref:compilation/basics.adoc[]
+* xref:compilation/artifacts.adoc[]
+* xref:compilation/phases.adoc[]
+* xref:compilation/preprocessing.adoc[]
+* xref:compilation/macros.adoc[]
+* xref:compilation/stringify.adoc[]
+* xref:compilation/guards.adoc[]
+* xref:compilation/compiling.adoc[]
+* xref:compilation/mangling.adoc[]
+* xref:compilation/assembling.adoc[]
+* xref:compilation/symbols.adoc[]
+* xref:compilation/linking.adoc[]
+* xref:compilation/loader.adoc[]
+* xref:compilation/libraries.adoc[]
+* xref:compilation/toolset.adoc[]
+* xref:compilation/compilers.adoc[]
+* xref:compilation/make.adoc[]
+* xref:compilation/project.adoc[]
+* xref:compilation/circular-includes.adoc[]
+
 .Linux FS
 * xref:linux/file-types.adoc[Типы файлов]
 * xref:linux/fhs.adoc[FHS]
