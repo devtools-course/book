@@ -1,5 +1,5 @@
 name: book
-version: dev
+version: compilation_page
 title: DevTools Book
 nav:
   - modules/ROOT/nav.adoc
