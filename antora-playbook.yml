@@ -48,6 +48,10 @@ antora:
           scope_name: 'source.spec'
           grammar_path: ./langs/rpmspec.tmLanguage.json
           alias: [ 'rpmspec' ]
+        - id: 'git-conflict'
+          scope_name: 'source.conflict'
+          grammar_path: ./langs/git-conflict.tmLanguage.json
+          alias: [ 'git-conflict' ]
         - id: 'yum-repo'
           scope_name: 'source.ini'
           grammar_path: ./node_modules/shiki/languages/ini.tmLanguage.json
