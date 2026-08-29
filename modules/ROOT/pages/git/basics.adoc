@@ -91,3 +91,7 @@ $ git tag v1.0.0
 $ git tag
 v1.0.0
 ----
+
+== Read more
+
+* https://www.theserverside.com/feature/Why-GitHub-renamed-its-master-branch-to-main[Why was `master` renamed (C) TheServerSide]
