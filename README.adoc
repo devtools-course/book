@@ -14,3 +14,6 @@ image:{img-ci-status}[CI Status]
 
 Main author::
 (C) 2026-present *Iwan Kalinin* <mailto:koefic.cien@gmail.com[koefic.cien@gmail.com]>
+
+Co-authors::
+(C) 2026-present *Viktoria Popova* <mailto:v.popova@phystech.edu[]>
