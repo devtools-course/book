@@ -8,17 +8,69 @@
 
 image::git/merge.png[]
 
-Объединяет две ветки, создавая новый *merge-коммит* с двумя родителями:
+Объединяет две ветки, создавая новый *merge-коммит* с двумя родителями.
+
+Важно понимать направление: изменения всегда вливаются *в текущую ветку*. Поэтому сначала переключаемся туда, куда мерж, а имя ветки в команде - это то, откуда берём изменения:
+
+[,console]
+----
+$ git switch main          <1>
+$ git merge feature-x      <2>
+Merge made by the 'ort' strategy.
+ app/login.py | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+----
+<1> Переходим в ветку-приёмник: менять будем `main`.
+<2> Вливаем в неё `feature-x`. То есть `feature-x -> main`; сама `feature-x` при этом не меняется вообще.
+
+Посмотреть, что получилось:
+
+[,console]
+----
+$ git log --oneline --graph -3
+*   9c1f0aa (HEAD -> main) Merge branch 'feature-x' into main   <1>
+|\
+| * 3f2a1b0 (feature-x) Add login form                          <2>
+* | 7d4e8c2 Fix typo in README                                  <3>
+|/
+----
+<1> Merge-коммит: он появился только в `main`, и у него два родителя.
+<2> Первый родитель - то, на чём стояла `main` до мержа.
+<3> Второй родитель - вершина `feature-x`.
+
+Если `main` не двигалась с момента ответвления `feature-x`, merge будет *fast-forward*: `main` просто «догонит» `feature-x`, никакого нового коммита не создастся. Если `main` тоже уходила вперёд - создастся merge-коммит.
+
+Плюс merge: сохраняет полную историю «как было на самом деле». Минус: история становится ветвистой, и в `git log` без графа выглядит запутанно.
+
+=== Мерж нескольких веток сразу
+
+Родителей у merge-коммита может быть и больше двух. `git merge` принимает сколько угодно веток - такой мерж называется *octopus*:
 
 [,console]
 ----
 $ git switch main
-$ git merge feature-x
+$ git merge feature-a feature-b feature-c
+Trying simple merge with feature-a
+Trying simple merge with feature-b
+Trying simple merge with feature-c
+Merge made by the 'octopus' strategy.
+ a.py | 3 +++
+ b.py | 5 +++++
+ c.py | 2 ++
+ 3 files changed, 10 insertions(+)
+
+$ git log --oneline --graph -4
+*-----.   4b7c9d1 (HEAD -> main) Merge branches 'feature-a', 'feature-b' and 'feature-c'
+|\ \ \
+| | | * 1a2b3c4 (feature-c) Add c
+| | * | 5d6e7f8 (feature-b) Add b
+| * | | 9a8b7c6 (feature-a) Add a
+|/ / /
 ----
 
-Если `main` не двигалась с момента ответвления feature-x, merge будет *fast-forward*: main просто «догонит» feature-x, никакого нового коммита не создастся. Если main тоже уходила вперёд - создастся merge-коммит.
+Получается один коммит с четырьмя родителями вместо трёх отдельных мержей.
 
-Плюс merge: сохраняет полную историю «как было на самом деле». Минус: история становится ветвистой, и в `git log` без графа выглядит запутанно.
+CAUTION: Octopus работает только если *ни в одной* из веток нет конфликтов - разрешать конфликты эта стратегия не умеет и просто откажется мержить («Should not be doing an octopus»). Тогда придётся сливать ветки по одной обычным merge. На практике octopus встречается редко: история с ним читается тяжелее, а откатить такой мерж сложнее.
 
 == Rebase
 
@@ -33,7 +85,7 @@ $ git rebase main
 
 === Interactive rebase - швейцарский нож
 
-Самая мощная штука, которая есть в git. Позволяет редактировать, объединять, переставлять, удалять коммиты:
+Самая мощная штука, которая есть в Git. Позволяет редактировать, объединять, переставлять, удалять коммиты:
 
 [,console]
 ----

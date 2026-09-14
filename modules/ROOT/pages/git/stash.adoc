@@ -4,6 +4,18 @@
 
 Ситуация: вы работаете над задачей, у вас куча несохранённых изменений, и тут срочно нужно переключиться на другую ветку и что-то починить. Коммитить пока рано (код не готов), а изменения потерять нельзя.
 
+В лоб переключиться не выйдет - Git не даст затереть несохранённые правки:
+
+[,console]
+----
+$ git switch main
+error: Your local changes to the following files would be overwritten by checkout:
+        app/login.py
+        app/models.py
+Please commit your changes or stash them before you switch branches.
+Aborting
+----
+
 Тут спасает `stash`:
 
 [,console]
