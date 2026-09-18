@@ -154,7 +154,7 @@ $ ssh -T git@github.com
 Hi username! You've successfully authenticated, but GitHub does not provide shell access.
 ----
 
-Если увидели такое сообщение - всё работает. При первом соединении Git спросит, доверяете ли вы отпечатку сервера - отвечайте `yes`.
+Если увидели такое сообщение - все работает. При первом соединении Git спросит, доверяете ли вы отпечатку сервера - отвечайте `yes`.
 
 == Read more
 
