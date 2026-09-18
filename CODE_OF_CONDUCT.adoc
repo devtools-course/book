@@ -1,0 +1,1 @@
+modules/ROOT/pages/code-of-conduct.adoc
