@@ -19,7 +19,15 @@ for file in $(git diff-index --name-only "$against"); do
 	if [ -f "$file" ] && [[ "$file" == *.adoc ]] && grep -qE '[^ ] -- [^ ]' "$file"; then
     	cat <<- EOF
     		Asciidoc requires double spaces around --:
-    		$(grep -qE '[^ ] -- [^ ]' "$file")
+    		$(grep -nE '[^ ] -- [^ ]' "$file")
+		EOF
+		echo " Error"
+		exit 1
+	fi
+	if [ -f "$file" ] && [[ "$file" == *.adoc ]] && grep -qE '[^ ] - [^ ]' "$file"; then
+		cat <<- EOF
+			Use '  --  ' instead of ' - ':
+			$(grep -nE '[^ ] - [^ ]' "$file")
 		EOF
 		echo " Error"
 		exit 1

@@ -1,4 +1,4 @@
-= Monitor your repo
+= Получить различную информацию о репозитории
 :page-authors: Виктория Попова
 :description: Git. Мониторинг
 
@@ -43,14 +43,14 @@ $ git log main..feature       <7>
 
 [,console]
 ----
-$ git log --oneline --graph --decorate --all
+$ git log --oneline --graph --all
 ----
 
 Такое длинно писать каждый раз лень, поэтому обычно ставят алиас:
 
 [,console]
 ----
-$ git config --global alias.lg "log --oneline --graph --decorate --all"
+$ git config --global alias.lg "log --oneline --graph --all"
 $ git lg
 ----
 
@@ -86,13 +86,13 @@ c4d5e6f (Anna  2026-06-18)     return sum(item.price for item in items)
 [,console]
 ----
 $ git bisect start
-$ git bisect bad                    <1>
-$ git bisect good 3f2a1b0           <2>
-# Git переключается на коммит посередине,
-# вы проверяете, работает или нет:
-$ git bisect good                   <3>
-# Git продолжает делить пополам, пока не найдет первый плохой
-$ git bisect reset                  <4>
+$ git bisect bad                           <1>
+$ git bisect good 3f2a1b0                  <2>
+ Git переключается на коммит посередине,
+ вы проверяете, работает или нет:
+$ git bisect good                          <3>
+ Git продолжает делить пополам, пока не найдет первый плохой
+$ git bisect reset                         <4>
 ----
 <1> Текущий коммит сломан.
 <2> А вот этот работал.

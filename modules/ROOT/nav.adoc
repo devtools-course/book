@@ -6,10 +6,10 @@
 .Git
 
 * xref:git/basics.adoc[]
+* xref:git/create-repo.adoc[]
 * xref:git/commits.adoc[]
 * xref:git/refs.adoc[]
 * xref:git/remotes.adoc[]
-* xref:git/create-repo.adoc[]
 * xref:git/special-files.adoc[]
 * xref:git/trees.adoc[]
 * xref:git/merge.adoc[]

@@ -2,10 +2,10 @@
 :page-authors: Виктория Попова
 :description: Git. Удаленные репозитории
 
-== Работа с удаленным репозиторием
+== Основные подкомманды
 
 Remote::
-Ссылка на удаленный репозиторий. Стандартное имя - `origin`.
+Ссылка на удаленный репозиторий. Стандартное имя  --  `origin`.
 +
 [,console]
 ----
@@ -24,9 +24,9 @@ Cloning into 'project'...
 ----
 
 Fork::
-Своя копия чужого репозитория на сервере (термин GitHub/GitLab, не самого Git). Делается кнопкой *Fork* на странице репозитория - у команды `git` аналога нет.
+Своя копия чужого репозитория на сервере (термин GitHub/GitLab, не самого Git). Делается кнопкой *Fork* на странице репозитория  --  у команды `git` аналога нет.
 
-Push::
+<<push, Push>>::
 Отправить свои локальные коммиты в удаленный репозиторий.
 +
 [,console]
@@ -34,7 +34,15 @@ Push::
 $ git push origin main
 ----
 
-Pull::
+<<fetch-pull,Fetch>>::
+Забрать изменения с удаленного репозитория, но не применять их к рабочей ветке.
++
+[,console]
+----
+$ git fetch origin
+----
+
+<<fetch-pull,Pull>>::
 Забрать изменения с удаленного репозитория и сразу применить их к своей ветке (по сути `fetch` + `merge`).
 +
 [,console]
@@ -42,13 +50,6 @@ Pull::
 $ git pull origin main
 ----
 
-Fetch::
-Забрать изменения с удаленного репозитория, но не применять их к рабочей ветке.
-+
-[,console]
-----
-$ git fetch origin
-----
 
 Pull request (PR) / Merge request (MR)::
 Запрос на слияние ваших изменений в чужую или основную ветку. Мы так, например, ревьювим кода на GitHub/GitLab. На работе тоже будете создавать реквесты. Создается через веб-интерфейс сервиса.
@@ -57,53 +58,55 @@ Pull request (PR) / Merge request (MR)::
 
 Про `git push`, `git pull` и `git fetch` вы уже видели. Теперь несколько деталей, о которых часто забывают.
 
+[#push]
 === Что делает push
 
 Обычно достаточно просто `git push`, если ветка уже связана с удаленной (через `-u` при первом пуше):
 
 [,console]
 ----
-$ git push                          <1>
-$ git push origin feature-x         <2>
-$ git push -u origin feature-x      <3>
+$ git push                       <1>
+$ git push origin feature-x      <2>
+$ git push -u origin feature-x   <3>
 ----
 <1> Текущую ветку в ее upstream.
 <2> Явно указать remote и ветку.
 <3> То же самое, плюс запомнить связь `feature-x → origin/feature-x`.
 
+[#fetch-pull]
 === fetch vs pull
 
-`fetch` скачивает данные с сервера, но ничего не трогает в ваших ветках. После fetch у вас обновляются указатели `origin/main`, `origin/feature-x`, и можно посмотреть, что там прилетело, прежде чем сливать к себе:
+`fetch` скачивает данные с сервера, но ничего не трогает в ваших ветках. После `fetch` у вас обновляются указатели `origin/main`, `origin/feature-x`, и можно посмотреть, что там прилетело, прежде чем сливать к себе:
 
 [,console]
 ----
 $ git fetch origin
-$ git log HEAD..origin/main         <1>
+$ git log HEAD..origin/main   <1>
 ----
 <1> Показать, что нового в origin/main по сравнению с текущей веткой.
 
-`pull` = `fetch` + автоматическое применение изменений. По умолчанию через merge, но можно и через rebase:
+`pull` = `fetch` + автоматическое применение изменений. По умолчанию через `merge`, но можно и через `rebase`:
 
 [,console]
 ----
-$ git pull                          <1>
-$ git pull --rebase                 <2>
+$ git pull                               <1>
+$ git pull --rebase                      <2>
 $ git config --global pull.rebase true   <3>
 ----
 <1> `fetch` + `merge`.
 <2> `fetch` + `rebase`.
-<3> Чтобы rebase был по умолчанию всегда.
+<3> Чтобы `rebase` был по умолчанию всегда.
 
 Разница на пальцах:
 
-* `pull` (через merge) - проще, но каждый раз создает merge-коммиты вида «Merge branch 'main' of ...». История становится ветвистой и грязной.
-* `pull --rebase` - переносит ваши локальные коммиты поверх свежих чужих. История линейная, но ваши коммиты меняют хэши. Не критично, пока эти коммиты не запушены.
+* `pull` (через `merge`)  --  проще, но каждый раз создает merge-коммиты вида `Merge branch 'main' of ...`. История становится ветвистой и грязной.
+* `pull --rebase`  --  переносит ваши локальные коммиты поверх свежих чужих. История линейная, но ваши коммиты меняют хэши. Не критично, пока эти коммиты не запушены.
 
-В большинстве команд негласно принят `pull --rebase`, потому его обычно включают глобально.
+TIP: В большинстве команд негласно принят `pull --rebase`, потому его обычно включают глобально.
 
 === Upstream и трекинг веток
 
-Каждая локальная ветка может быть *связана* с удаленной - это называется *upstream*. Связь настраивается флагом `-u` (он же `--set-upstream`) при первом push:
+Каждая локальная ветка может быть *связана* с удаленной  --  это называется *upstream*. Связь настраивается флагом `-u` (он же `--set-upstream`) при первом `push`:
 
 [,console]
 ----
@@ -112,7 +115,7 @@ $ git push -u origin feature-x
 
 После этого:
 
-* `git status` показывает `ahead 2, behind 1` - на сколько коммитов вы обогнали удаленную и сколько отстали.
+* `git status` показывает `ahead 2, behind 1`  --  на сколько коммитов вы обогнали удаленную и сколько отстали.
 * `git pull` и `git push` работают без аргументов.
 * Можно писать `@\{upstream}` (или короче `@\{u}`) вместо `origin/feature-x`.
 
@@ -157,39 +160,40 @@ $ git push origin :feature-x
 
 [,console]
 ----
-$ git remote add upstream git@github.com:owner/project.git
-$ git fetch upstream                          <1>
+$ git remote add upstream REMOTE_URL
+$ git fetch upstream         <1>
 $ git switch main
-$ git rebase upstream/main                    <2>
-$ git push                                    <3>
+$ git rebase upstream/main   <2>
+$ git push                   <3>
 ----
 <1> Забрать свежие изменения из оригинала.
-<2> Обновить свою main поверх оригинала.
-<3> Запушить обновленную main в свой fork.
+<2> Обновить свою `main` поверх оригинала.
+<3> Запушить обновленную `main` в свой fork.
 
+NOTE: Вместо `upstream` вы можете использовать любое другое имя
 
 == Как залить существующий локальный проект на GitHub
 
 Если у вас уже есть папка с кодом, но без Git:
 
-[,console]
+[,console,subs="+verbatim,-quotes"]
 ----
-$ cd существующий-проект
+$ cd PROJECT_DIR
 $ git init
-$ echo "node_modules/" > .gitignore    <1>
 $ git add .
 $ git commit -m "Initial commit"
-$ git branch -M main
-$ git remote add origin git@github.com:username/project.git
+$ git branch -m main
+$ git remote add origin REMOTE_URL
 $ git push -u origin main
 ----
-<1> Обязательно перед `git add .` - иначе все лишнее попадет в первый коммит, и вычистить его оттуда потом будет непросто.
+
+WARNING: Обязательно создайте и настройте `.gitignore` перед `git add .`, иначе все лишнее попадет в первый коммит, и вычистить его оттуда потом будет непросто.
 
 Если репозиторий уже был инициализирован раньше и нужно только привязать его к remote:
 
 [,console]
 ----
-$ git remote add origin git@github.com:username/project.git
+$ git remote add origin REMOTE_URL
 $ git push -u origin main
 ----
 
@@ -197,7 +201,7 @@ $ git push -u origin main
 
 [,console]
 ----
-$ git clone git@github.com:someuser/cool-project.git
+$ git clone PROJECT_URL
 $ cd cool-project
 ----
 
@@ -205,16 +209,16 @@ $ cd cool-project
 
 === Сценарий 1. У вас есть права (свой проект, командная разработка)
 
-Не работайте прямо в `main` - заведите отдельную ветку под каждую задачу, в проде не принято все пушить в 'main':
+Не работайте прямо в `main`  --  заведите отдельную ветку под каждую задачу, в проде не принято все пушить в `main`:
 
 [,console]
 ----
-$ git checkout -b feature/login         <1>
-# ...пишете код, коммитите...
-$ git push -u origin feature/login      <2>
+$ git checkout -b feature/login       <1>
+ ...пишете код, коммитите...
+$ git push -u origin feature/login    <2>
 ----
 <1> Создать ветку и сразу переключиться на нее. Эквивалент: `git switch -c feature/login`.
-<2> Первый `push` новой ветки - с `-u`, чтобы связать ее с одноименной веткой на сервере.
+<2> Первый `push` новой ветки  --  с `-u`, чтобы связать ее с одноименной веткой на сервере.
 
 После этого на GitHub заходите в репозиторий и создаете *Pull Request* из вашей ветки в `main`.
 
@@ -222,18 +226,18 @@ $ git push -u origin feature/login      <2>
 
 Здесь используется механизм *fork*:
 
-. На GitHub нажимаете *Fork* - появляется ваша копия репозитория.
+. На GitHub нажимаете *Fork*  --  появляется ваша копия репозитория.
 . Клонируете *свой fork*, а не оригинал:
 +
 [,console]
 ----
-$ git clone git@github.com:ВАШ_username/cool-project.git
+$ git clone PROJECT_URL
 ----
-. Часто добавляют второй remote с именем `upstream`, указывающий на оригинал - чтобы забирать оттуда свежие изменения:
+. Часто добавляют второй remote с именем `upstream`, указывающий на оригинал  --  чтобы забирать оттуда свежие изменения:
 +
 [,console]
 ----
-$ git remote add upstream git@github.com:someuser/cool-project.git
+$ git remote add upstream ORIGINAL_PROJECT_URL
 $ git fetch upstream
 $ git merge upstream/main
 ----

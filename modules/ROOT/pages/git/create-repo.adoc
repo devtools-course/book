@@ -1,4 +1,4 @@
-= Create a repo
+= Работа с "голым" репозиторием
 :page-authors: Виктория Попова
 :description: Git. Создание репозитория
 
@@ -18,8 +18,8 @@ Initialized empty Git repository in /home/user/my-project/.git/
 
 [,console]
 ----
-$ git init --initial-branch=main        <1>
-$ git init -b main                      <2>
+$ git init --initial-branch=main   <1>
+$ git init -b main                 <2>
 ----
 <1> Первая ветка будет называться `main`, а не `master`.
 <2> Короткая форма того же флага.
@@ -31,7 +31,7 @@ $ git init -b main                      <2>
 $ git config --global init.defaultBranch main
 ----
 
-Подробнее про конфиг - в xref:git/config.adoc[].
+Подробнее про конфиг  --  в xref:git/config.adoc[соответствующей странице].
 
 == Шаг 2. Сразу добавить `.gitignore`
 
@@ -39,14 +39,16 @@ $ git config --global init.defaultBranch main
 
 == Шаг 3. Добавить README.md
 
-`README.md` - файл с описанием проекта в корне репозитория. Это первое, что видит любой, кто открывает ваш репозиторий: и GitHub, и GitLab показывают его содержимое прямо на главной странице проекта.
+`README.md`  --  файл с описанием проекта в корне репозитория. Это первое, что видит любой, кто открывает ваш репозиторий: и GitHub, и GitLab показывают его содержимое прямо на главной странице проекта.
 
 Минимум, который стоит написать:
 
 * что это за проект и какую задачу решает;
 * как его собрать и запустить;
-* как с ним работать - примеры команд или скриншот;
+* как с ним работать  --  примеры команд или скриншот;
 * кому писать, если что-то сломалось.
+
+NOTE: `.md`  --  один из возможных вариантов форматирования. Вы можете также сделать `README.adoc` (как сделано у нас в проекте)
 
 == Шаг 4. Первый коммит
 
@@ -79,9 +81,9 @@ GitHub на странице пустого репозитория покаже�
 
 [,console]
 ----
-$ git remote add origin git@github.com:username/my-project.git
+$ git remote add origin PROJECT_URL
 $ git branch -M main                <1>
 $ git push -u origin main           <2>
 ----
 <1> Переименовать текущую ветку в `main` (на случай, если она называется `master`).
-<2> Флаг `-u` (`--set-upstream`) запоминает связь `main → origin/main`, чтобы дальше можно было писать просто `git push` и `git pull` без указания ветки.
+<2> Флаг `-u` (`--set-upstream`) запоминает связь `main \-> origin/main`, чтобы дальше можно было писать просто `git push` и `git pull` без указания ветки.
