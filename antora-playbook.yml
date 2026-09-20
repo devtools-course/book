@@ -43,6 +43,7 @@ antora:
         - cmake
         - make
         - haskell
+        - git-rebase
       register_languages:
         - id: 'rpmspec'
           scope_name: 'source.spec'
