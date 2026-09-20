@@ -1,5 +1,5 @@
 name: book
-version: latest
+version: git-dev
 title: DevTools Book
 nav:
   - modules/ROOT/nav.adoc

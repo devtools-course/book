@@ -1,7 +1,28 @@
 .О проекте
 * xref:authors.adoc[Авторы]
 * xref:code-of-conduct.adoc[Code of conduct]
-* xref:dev-guides.adoc[Гайды по разработке]
+* xref:contributing.adoc[]
+
+.Git
+
+* xref:git/basics.adoc[]
+* xref:git/create-repo.adoc[]
+* xref:git/commits.adoc[]
+* xref:git/refs.adoc[]
+* xref:git/remotes.adoc[]
+* xref:git/special-files.adoc[]
+* xref:git/trees.adoc[]
+* xref:git/merge.adoc[]
+* xref:git/conflicts.adoc[]
+* xref:git/stash.adoc[]
+* xref:git/monitor.adoc[]
+* xref:git/config.adoc[]
+* xref:git/hooks.adoc[]
+* xref:git/submodules.adoc[]
+* xref:git/internals.adoc[]
+* xref:git/bundles.adoc[]
+* xref:git/gl-gh.adoc[]
+* xref:git/lfs.adoc[]
 
 .Linux FS
 * xref:linux/file-types.adoc[Типы файлов]

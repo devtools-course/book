@@ -1,0 +1,85 @@
+= Special files
+:page-authors: Виктория Попова, Иван Калинин
+:description: Git. gitignore. gitkeep
+
+
+== .gitignore
+
+Файл со списком путей, которые Git должен игнорировать (например, `node_modules/`, бинарники, локальные конфиги). Он поддерживает следующий синтаксис:
+
+[,bash]
+----
+build/            # все в этой папке
+*.log             # конкретное расширение
+!important.log    # но не этот файл (отрицание)
+/config.yaml      # только в корне репозитория
+**/tmp/           # в любой папке
+----
+
+Порядок правил важен: последнее правило, подходящее под путь, побеждает.
+
+[CAUTION]
+====
+`.gitignore` работает только для *еще не отслеживаемых* файлов. Если вы уже закоммитили `secrets.txt`, добавление его в `.gitignore` ничего не изменит  --  Git продолжит за ним следить.
+====
+
+Чтобы перестать отслеживать файл, но оставить его на диске:
+
+[,console]
+----
+$ git rm --cached secrets.txt
+$ git commit -m "Stop tracking secrets"
+----
+
+Работает это и в обратную сторону: игнор  --  не запрет, а всего лишь значение по умолчанию. Если конкретный файл все-таки нужно закоммитить, его можно добавить принудительно флагом `-f` (`--force`):
+
+[,console]
+----
+$ git add build/report.pdf
+The following paths are ignored by one of your .gitignore files:
+build
+hint: Use -f if you really want to add them.
+
+$ git add -f build/report.pdf      <1>
+$ git status --short
+A  build/report.pdf
+----
+<1> Добавить файл, несмотря на правило в `.gitignore`.
+
+После этого файл становится отслеживаемым, и `.gitignore` на него больше не действует  --  изменения в нем будут попадать в `git status` как обычно.
+
+== .gitkeep
+
+Git не умеет отслеживать пустые папки, он вообще работает только с файлами. А иногда пустая папка нужна (например, `logs/`, куда программа будет писать при запуске). Общепринятый трюк: положить внутрь пустой файл `.gitkeep`.
+
+Никакой магии тут нет: `.gitkeep` это не команда Git и не что-то встроенное. Это просто конвенция, договоренность называть такие файлы именно так. Можно назвать хоть `.please_keep_me`  --  работать будет одинаково.
+
+== .gitattributes
+
+Файл, добавляющий атрибуты файлам.
+
+[,text]
+----
+logo.png filter=lfs diff=lfs merge=lfs -text
+
+fenrir* gitlab-language=bash linguist-language=bash
+*.hel gitlab-language=bash linguist-language=bash
+----
+
+Его использует LFS для пометки отслеживаемых файлов, а также с его помощью
+вы можете настроить подсветку файлов в GitLab и GitHub.
+
+== .gitmodules
+
+Файлы, сохраняющий информацию о том, где лежит исходники для сабмодулей.
+
+[,ini]
+----
+[submodule "sub"]
+    path = sub
+    url = https://gitlab.com/example/sub.git
+----
+
+== Read more
+
+* https://git-scm.com/docs/gitattributes[gitattributes (C) Git docs]

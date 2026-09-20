@@ -1,0 +1,80 @@
+= Экспортирование репозиториев
+:page-authors: Виктория Попова, Иван Калинин
+:description: Git. Bundles
+
+== Bundles
+
+Bundle  --  это архив с частью репозитория (или всем целиком), который можно передать без сетевого соединения. Полезно, когда надо скинуть репу по флешке коллеге без интернета.
+
+[,console]
+----
+$ git bundle create repo.bundle --all               <1>
+$ git bundle create fix.bundle main..fix-x          <2>
+----
+<1> Весь репозиторий в один файл.
+<2> Только коммиты, которые есть в `fix-x`, но нет в `main`.
+
+Применение:
+
+[,console]
+----
+$ git clone repo.bundle new-project                 <1>
+$ git bundle verify fix.bundle                      <2>
+$ git fetch fix.bundle fix-x:fix-x                  <3>
+----
+<1> Склонировать из bundle, как из обычного remote.
+<2> Проверить, что bundle не побит.
+<3> Забрать из bundle ветку `fix-x` в свою локальную `fix-x`.
+
+Штука редкая, но иногда очень выручает  --  особенно в местах с плохим интернетом.
+
+== GitLab export
+
+Bundle переносит только историю Git. Но у проекта на GitLab есть еще issues, merge request'ы, метки, вики, настройки CI  --  всего этого в репозитории нет. Чтобы перевезти проект целиком (например, с одного инстанса GitLab на другой), используется *export/import проекта*.
+
+Экспорт делается в веб-интерфейсе: *Settings \-> General \-> Advanced \-> Export project*. GitLab прямо на этой странице честно перечисляет, что уедет, а что нет:
+
+.Settings \-> General \-> Advanced \-> Export project
+image::git/gl-export-settings.jpg[]
+
+Обратите внимание на второй список: job-логи и артефакты, образы из container registry, CI-переменные, триггеры пайплайнов, вебхуки и любые зашифрованные токены в архив *не попадают*  --  их придется настроить на новом месте руками.
+
+Архив собирается не мгновенно. Когда он будет готов, GitLab пришлет письмо со ссылкой (ее же можно забрать на той же странице настроек):
+
+.Письмо с ссылкой на готовый архив
+image::git/gl-export-mail.jpg[]
+
+CAUTION: Ссылка живет 24 часа. Не успели скачать  --  придется запускать экспорт заново.
+
+То же самое из API, если руками кликать лень:
+
+[.wrap,console]
+----
+$ curl -X POST --header "PRIVATE-TOKEN: $TOKEN" "https://gitlab.example.com/api/v4/projects/42/export"   <1>
+$ curl --header "PRIVATE-TOKEN: $TOKEN" "https://gitlab.example.com/api/v4/projects/42/export" | jq .export_status   <2>
+$ curl --header "PRIVATE-TOKEN: $TOKEN" -o project.tar.gz "https://gitlab.example.com/api/v4/projects/42/export/download"   <3>
+----
+<1> Поставить экспорт в очередь.
+<2> Дождаться статуса `finished`.
+<3> Скачать готовый архив.
+
+На выходе  --  обычный `tar.gz`, внутрь которого можно спокойно заглянуть:
+
+.Содержимое архива с экспортом
+image::git/gl-export-archive.jpg[]
+
+Что там лежит:
+
+`VERSION`, `GITLAB_VERSION`, `GITLAB_REVISION`::
+Версия формата экспорта и версия инстанса, где его собрали. Импортировать архив можно только в GitLab не старше исходного.
+
+`project.bundle`::
+Тот самый bundle, про который весь остальной текст этой страницы  --  весь репозиторий одним файлом. Его можно просто склонировать: `git clone project.bundle`. Рядом могут лежать `project.wiki.bundle` и `project.design.bundle`.
+
+`tree/`::
+Метаданные проекта: `project.json` и куча `.ndjson`  --  issues, merge request'ы с диффами и комментариями, метки, участники, защищенные ветки, настройки CI/CD.
+
+`lfs-objects/`, `uploads/`, `snippets/`::
+Объекты xref:git/lfs.adoc[Git LFS], файлы и картинки, приложенные к issue и комментариям, и сниппеты проекта.
+
+Импорт  --  зеркальная операция: *New project \-> Import project \-> GitLab export*, загрузить тот же `tar.gz`.

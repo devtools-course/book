@@ -1,0 +1,36 @@
+#! /usr/bin/env bash
+
+root_dir=$(git rev-parse --show-toplevel)
+
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=$(git hash-object -t tree /dev/null)
+fi
+
+# Redirect output to stderr.
+exec 1>&2
+
+for file in $(git diff-index --name-only "$against"); do
+	file="$root_dir/$file"
+	echo -n "Checking <$file>:"
+	# File might be removed
+	if [ -f "$file" ] && [[ "$file" == *.adoc ]] && grep -qE '[^ ] -- [^ ]' "$file"; then
+    	cat <<- EOF
+    		Asciidoc requires double spaces around --:
+    		$(grep -nE '[^ ] -- [^ ]' "$file")
+		EOF
+		echo " Error"
+		exit 1
+	fi
+	if [ -f "$file" ] && [[ "$file" == *.adoc ]] && grep -qE '[^ ] - [^ ]' "$file"; then
+		cat <<- EOF
+			Use '  --  ' instead of ' - ':
+			$(grep -nE '[^ ] - [^ ]' "$file")
+		EOF
+		echo " Error"
+		exit 1
+	fi
+	echo " Done"
+done

@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+
+playbook="antora-playbook.yml"
+
+git show ":${playbook}" | grep -- '- url: \.'
+
+if git show ":${playbook}" | grep -q -- '- url: \.'; then
+	echo "Playbook error: contains '- url: .'"
+	exit 1
+fi

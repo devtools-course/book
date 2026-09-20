@@ -1,0 +1,35 @@
+= GitHub & GitLab
+:page-authors: Виктория Попова, Иван Калинин
+:description: GitHub & GitLab
+
+
+Стандартный Git знает только про репозитории и коммиты. Все, что вокруг них:  Pull Request, issues, actions, releases  --  это надстройки конкретных сервисов, и до недавнего времени с этим приходилось лезть в браузер.
+
+Официальные CLI-утилиты закрывают эту дыру:
+
+* `gh` для GitHub  --  https://cli.github.com;
+* `glab` для GitLab  --  https://gitlab.com/gitlab-org/cli.
+
+Что можно делать из терминала:
+
+[,console]
+----
+$ gh auth login                           <1>
+$ gh repo clone user/project              <2>
+$ gh repo create my-project --public      <3>
+$ gh pr create --fill                     <4>
+$ gh pr list                              <5>
+$ gh pr checkout 42                       <6>
+$ gh pr review --approve                  <7>
+$ gh run watch                            <8>
+----
+<1> Один раз залогиниться в GitHub.
+<2> То же, что `git clone`, но короче.
+<3> Создать репу и сразу привязать remote.
+<4> Создать PR из текущей ветки, заголовок и описание взять из последнего коммита.
+<5> Список открытых PR.
+<6> Переключиться на ветку PR #42, даже если она в чужом fork.
+<7> Заапрувить PR прямо из терминала.
+<8> Смотреть, как крутится CI.
+
+`glab` устроен в целом точно так же, только для GitLab.
