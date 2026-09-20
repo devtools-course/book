@@ -11,7 +11,6 @@ image:{img-ci-status}[CI Status]
 
 Проект распространяется под лицензией link:LICENSE[MPL-2.0].
 
-
 == Copyright
 
 Main author::
