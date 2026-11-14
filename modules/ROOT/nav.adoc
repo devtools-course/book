@@ -51,3 +51,4 @@
 
 .Docker
 * xref:docker/containers-introduction.adoc[]
+* xref:docker/running-containers.adoc[]
