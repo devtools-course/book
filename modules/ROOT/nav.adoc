@@ -55,3 +55,5 @@
 * xref:docker/images-and-layers.adoc[]
 * xref:docker/dockerfile-basics.adoc[]
 * xref:docker/minimal-images-multistage.adoc[]
+
+* xref:docker/mounts-and-storage.adoc[]
