@@ -15,3 +15,9 @@ GitLab: https://gitlab.com/lBAH[lBAH]
 GitHub: https://github.com/cerisesav[cerisesav] +
 GitLab: https://gitlab.com/cerisesav[karmaxxkoma] +
 Telegram: https://t.me/karmaxxkoma
+
+== Михаил Агафонов
+Почта: mailto:agafonovmikhail1784@gmail.com[agafonovmikhail1784@gmail.com] +
+GitHub: https://github.com/magaff[@magaff] +
+GitLab: https://gitlab.com/magaff[@magaff] +
+Telegram: https://t.me/agaff[@agaff]
