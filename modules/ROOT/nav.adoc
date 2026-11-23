@@ -58,3 +58,4 @@
 
 * xref:docker/mounts-and-storage.adoc[]
 * xref:docker/networking.adoc[]
+* xref:docker/healthchecks.adoc[]
