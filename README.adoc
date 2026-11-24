@@ -17,4 +17,5 @@ Main author::
 (C) 2026-present *Iwan Kalinin* <mailto:koefic.cien@gmail.com[koefic.cien@gmail.com]>
 
 Co-authors::
-(C) 2026-present *Viktoria Popova* <mailto:v.popova@phystech.edu[]>
+(C) 2026-present *Viktoria Popova* <mailto:v.popova@phystech.edu[]> +
+(C) 2026-present *Mikhail Agafonov* <mailto:link:mailto:agafonovmikhail1784@gmail.com[v.popova@phystech.edu][]>
