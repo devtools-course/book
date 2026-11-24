@@ -1,0 +1,168 @@
+= Минимизация образов для Java
+:page-authors: Иван Калинин
+:description: Минимизация образов на Java. Jlink для docker
+
+Попробуем собрать образ `Hello World!` на джаве:
+
+.`Hello.java`
+[,java]
+----
+void main() {
+    IO.println("Hello World!");
+}
+----
+
+.`Dockerfile`
+[,docker]
+----
+FROM alpine:3
+RUN apk add --no-cache openjdk25-jdk
+COPY Hello.java ./
+ENTRYPOINT [ "java", "Hello.java" ]
+----
+
+Соберем образ и увидим, что его размер составит `552 MB`. И, кажется, что полгигабайта на простой _хеллоу-ворлд_  --  слишком много. Поэтому попробуем его минимизировать.
+
+== JDK & JRE
+
+[TIP.todo]
+====
+Ссылка на JDK vs JRE vs JVM
+====
+
+Вспомним, что `alpine` весит ~45 MB, наш _хеллоу-ворлд_ тоже не будет весить больше нескольких гигабайт, поэтому основной вес образа приходится на JDK и уменьшать нужно его. Вспомним, что для работы java-приложений необходима только JRE, поэтому воспользуемся мультистеджем:
+
+.Новый `Dockerfile`
+[,docker]
+----
+FROM alpine:3 AS build
+RUN apk add --no-cache openjdk25-jdk
+COPY Hello.java ./
+RUN javac -d /out Hello.java
+
+FROM alpine:3 AS run
+RUN apk add --no-cache openjdk25-jre-headless
+
+COPY --from=build /out/Hello.class ./
+ENTRYPOINT [ "java", "Hello" ]
+----
+
+Пересоберем образ и замерим его. Получили `339 MB`.
+
+IMPORTANT: Никогда не оставляйте в итоговом образе JDK (_только если вы не собираете окружения для сборки_).
+
+Кажется, что пакет должен был бы называться `openjdk25-jre`, а мы используем `headless`. Что же это такое? Пакеты `-headless`  --  это пакеты без GUI зависимостей, а это именно наш случай.
+
+NOTE: Имена `jre` и `jre-headless` будут так же использоваться и в других пакетных менеджерах.
+
+== JLink
+
+Хоть мы и уменьшили размер образа в почти 1.5 раза, 339 MB все еще очень много для простого _хеллоу-ворлда_. Действительно, стандартная библиотека содержит очень много компонентов, которые не нужны нам для работы (например, работа с HTTP/SQL). И тут на помощь приходит система модулей (JPMS), введенная в 9 джаве. Превратим наш код в модуль:
+
+.Файл `module-info.java`
+[,java]
+----
+module hello {
+    exports hello;
+}
+----
+
+Новый `Hello.java`
+[,java]
+----
+package hello;
+
+class Hello {
+    static void main() {
+        IO.println("Hello World!");
+    }
+}
+----
+
+[TIP.todo]
+====
+Ссыль на jlink и на JPMS
+====
+
+Теперь же воспользуемся инструментом `jlink`, который умеет генерировать кастомизированный образ JRE, содержащий только необходимые модули.
+
+.Новый `Dockerfile`
+[,docker,]
+----
+FROM alpine:3 AS build
+RUN apk add --no-cache openjdk25-jdk
+
+RUN mkdir -p /hello/hello
+COPY Hello.java /hello/hello/
+COPY module-info.java /hello/
+
+RUN javac -d /out --module-source-path / -m hello
+RUN jlink -p out --add-modules hello --launcher runner=hello/hello.Hello --output /image
+
+FROM alpine:3 AS run
+
+COPY --from=build /image/ /
+
+ENTRYPOINT [ "/bin/runner" ]
+----
+
+Соберем модуль и посмотрим сколько он весит: получаем всего `96 MB`, из которых `43 MB` занимает `alpine`.
+
+Попробуем собрать на `scratch`:
+
+[,console]
+----
+$ docker build -t hello .
+... (SUCCESS)
+$ docker run --rm hello
+exec /bin/runner: no such file or directory
+----
+
+Ошибка выглядит очень странной: попробуем пересобрать на `busybox` и войти внутрь. При запуске уже появляется новая ошибка: `/bin/runner: line 4: /bin/java: not found`.
+
+[,console]
+----
+$ cat /bin/runner
+#!/bin/sh
+JLINK_VM_OPTIONS=
+DIR=`dirname $0`
+$DIR/java $JLINK_VM_OPTIONS -m hello/hello.Hello "$@"
+----
+
+Тогда прошлую ошибку можно исправить, заменив `ENTRYPOINT` на `[ "/bin/java", "-m", "hello/hello.Hello" ]`. А вот новая ошибка куда сложнее. Так как `/bin/java`  --  это ELF-файл, то у него могут быть динамические зависимости. Вернемся в `alpine` и посмотрим, от чего зависит `java`:
+
+[,console]
+----
+$ ldd /bin/java
+	/lib/ld-musl-x86_64.so.1 (0x7f7464215000)
+	libjli.so => /bin/../lib/libjli.so (0x7f74641f7000)
+	libc.musl-x86_64.so.1 => /lib/ld-musl-x86_64.so.1 (0x7f7464215000)
+	libz.so.1 => /usr/lib/libz.so.1 (0x7f74641dc000)
+----
+
+Получается у нас есть три библиотеки, от которых будет зависеть образ, причем `libjli.so` генерируется `jlink`. Попробуем пересобрать образ, взяв необходимые библиотеки:
+
+.Новый `Dockerfile`
+[,docker]
+----
+FROM alpine:3 AS build
+RUN apk add --no-cache openjdk25-jdk
+
+RUN mkdir -p /hello/hello
+COPY Hello.java /hello/hello/
+COPY module-info.java /hello/
+
+RUN javac -d /out --module-source-path / -m hello
+
+RUN jlink -p out --add-modules hello --output /image
+
+FROM scratch AS run
+
+COPY --from=build /image/ /
+COPY --from=build /lib/ld-musl-x86_64.so.1 /usr/lib/libz.so.1 /lib/
+
+ENTRYPOINT [ "/bin/java", "-m", "hello/hello.Hello" ]
+----
+
+И наш образ успешно будет работать. Попробуем узнать, сколько теперь он весит: `83 MB`. Да, это на почти 15 MB меньше, но мы же хотели убрать `alpine`, который весит `45 MB`: что пошло не так? Скопированные библиотеки весят не более пары мегабайт. Ответ кроется в файле `lib/modules`: на `alpine` он весит почти `30 MB`  --  это модули ядра Linux, которые необходимы для работы. Этот же файл генерируется через `jlink`, поэтому мы смогли соптимизировать лишние ~15 MB, но оставшиеся 30 MB не получится. Стоит ли менять `alpine` на `scratch`  --  решать уже вам, но 83 MB пока максимум, который можно выжать из джавы, сохранив джаву.
+
