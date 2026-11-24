@@ -57,3 +57,7 @@
 * xref:docker/minimal-images-multistage.adoc[]
 
 * xref:docker/mounts-and-storage.adoc[]
+* xref:docker/networking.adoc[]
+* xref:docker/healthchecks.adoc[]
+
+* xref:docker/docker-compose.adoc[]

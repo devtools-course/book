@@ -1,5 +1,5 @@
 name: book
-version: latest
+version: docker
 title: DevTools Book
 nav:
   - modules/ROOT/nav.adoc
